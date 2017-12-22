@@ -1,0 +1,27 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>List of courses</title>
+    </head>
+    <body>
+    <!-- List of uploaded documents -->
+    <div class='container' align="center">
+    {% if documents %}
+        
+        {% for document in documents %}
+            <p><a href="{% url 'carousel:list_lectures' document.id %}"><h2> {{ document.title }}</h2></a></p>
+        {% endfor %}
+        
+    {% else %}
+        <p>No documents.</p>
+    {% endif %}
+    </div>
+
+    </body>
+</html>
+
+{% endblock %}
