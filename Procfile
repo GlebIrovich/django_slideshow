@@ -1,1 +1,1 @@
-web: gunicorn slider.wsgi
+web: gunicorn slider.wsgi —-log-file -
