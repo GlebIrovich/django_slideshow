@@ -8,4 +8,4 @@ __pycache__
 
 settings_local.py
 
-slider/media/
+**/media
