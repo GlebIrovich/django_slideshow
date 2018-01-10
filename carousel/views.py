@@ -37,16 +37,16 @@ def upload_documents(request):
                     input_path = 'media/' + path
                     output_path = 'media/' + os.path.dirname(path)
                     
-                    unzip(input_path, output_path)
-                    # update path field
+                    # unzip(input_path, output_path)
+                    # # update path field
 
-                    newdoc.docfile = os.path.dirname(newdoc.docfile.name)+ '/' + original_name # set path to unziped folder
-                    newdoc.save()
+                    # newdoc.docfile = os.path.dirname(newdoc.docfile.name)+ '/' + original_name # set path to unziped folder
+                    # newdoc.save()
 
-                    # update JSON
+                    # # update JSON
                 
-                    json = generate_json(newdoc.docfile.name, request.POST['title'])
-                    newdoc.json = json
+                    # json = generate_json(newdoc.docfile.name, request.POST['title'])
+                    # newdoc.json = json
                     newdoc.save()
                     # No errors
                     error = ''
