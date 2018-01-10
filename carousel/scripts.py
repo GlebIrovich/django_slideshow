@@ -16,10 +16,6 @@ def randomword(length):
 
 # extract the archive
 def unzip(source_path, output_path): # ADD OUTPUT ? , output_path
-    
-    #S3Conn = S3Connection() # assuming your .boto has been setup
-    #Bucket = S3Conn.get_bucket(os.environ.get('BUCKETEER_BUCKET_NAME')) 
-
 
     archive = zipfile.ZipFile(source_path)
     # set path

@@ -15,3 +15,7 @@ wsgi_local.py
 .env
 
 cors.json
+
+Procfile
+
+settings_heroku.py
