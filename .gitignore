@@ -19,3 +19,5 @@ cors.json
 Procfile
 
 settings_heroku.py
+
+storage_backends.py
