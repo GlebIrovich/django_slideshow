@@ -1,0 +1,28 @@
+.lightbox {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.538);
+    z-index: 100;
+    display: none;
+}
+
+.lightbox-container {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    top: 15px;
+    margin: 5%;
+    z-index: 101;
+}
+
+.lightbox-close {
+    margin: -95%;
+}
+
+.nav-active {
+    display: block;
+}

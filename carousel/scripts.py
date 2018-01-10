@@ -18,6 +18,10 @@ def unzip(source_path, output_path): # ADD OUTPUT ? , output_path
         archive = zipfile.ZipFile(source_path)
         # set path
         archive.extractall(output_path)
+        try:
+            os.remove(source_path)
+        except OSError:
+            pass
     
 
 

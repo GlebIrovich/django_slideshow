@@ -23,9 +23,9 @@ from .views import index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', index, name = 'home'),
+    # url(r'^$', index, name = 'home'),
     # connect carousel app
-    url(r'^carousel/', include('carousel.urls')),
+    url(r'^', include('carousel.urls')),
    
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
