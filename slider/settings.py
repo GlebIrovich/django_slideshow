@@ -45,7 +45,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['0.0.0.0','https://uzh-slideshow.herokuapp.com/']
 
-LOGIN_REDIRECT_URL = '/carousel/classes'
+LOGIN_REDIRECT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
@@ -71,7 +71,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ROOT_URLCONF = 'slider.urls'
+ROOT_URLCONF = 'carousel.urls'
 
 TEMPLATES = [
     {
