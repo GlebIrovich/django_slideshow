@@ -11,3 +11,7 @@ settings_local.py
 **/media
 
 wsgi_local.py
+
+.env
+
+cors.json

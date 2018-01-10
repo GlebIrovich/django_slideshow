@@ -54,8 +54,8 @@ def upload_documents(request):
                     # Display error + Delete files
                     error = 'Import error.'
                     path = 'media/' + os.path.dirname(newdoc.docfile.name)
-                    shutil.rmtree(path)
-                    newdoc.delete()
+                    #shutil.rmtree(path)
+                    #newdoc.delete()  # OUTCOMMENT
 
 
             else:

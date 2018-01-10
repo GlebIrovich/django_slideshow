@@ -1,10 +1,12 @@
 import pandas as pd
 import os
-
+#from boto.s3.connection import S3Connection
 
 
 import zipfile
 import random, string
+
+
 
 def randomword(length):
    letters = string.ascii_letters
@@ -14,14 +16,18 @@ def randomword(length):
 
 # extract the archive
 def unzip(source_path, output_path): # ADD OUTPUT ? , output_path
-    #if zipfile.is_zipfile(source_path):
-        archive = zipfile.ZipFile(source_path)
-        # set path
-        archive.extractall(output_path)
-        try:
-            os.remove(source_path)
-        except OSError:
-            pass
+    
+    #S3Conn = S3Connection() # assuming your .boto has been setup
+    #Bucket = S3Conn.get_bucket(os.environ.get('BUCKETEER_BUCKET_NAME')) 
+
+
+    archive = zipfile.ZipFile(source_path)
+    # set path
+    archive.extractall(output_path)
+    try:
+        os.remove(source_path)
+    except OSError:
+        pass
     
 
 
