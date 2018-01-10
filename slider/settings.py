@@ -71,7 +71,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
-ROOT_URLCONF = 'carousel.urls'
+ROOT_URLCONF = 'slider.urls'
 
 TEMPLATES = [
     {
