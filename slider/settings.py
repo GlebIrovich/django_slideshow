@@ -20,7 +20,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_static/'
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
+STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
+
 
 MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/'
 MEDIA_URL = '/media/'
