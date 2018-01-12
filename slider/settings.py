@@ -18,7 +18,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_ROOT = BASE_DIR +'/'+ 'static' 
+STATIC_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_static/'
 STATIC_URL = '/static/'
 #STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
 
@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['0.0.0.0', 'uzh.cookiehunter@webfactional.com']
 
@@ -101,8 +101,8 @@ DATABASES = {
                     "NAME": "uzh_slideshow",
                     "USER": "uzh_slideshow",
                     "PASSWORD": "superuser",
-                    "HOST": "",
-                    "PORT": "",  # default port
+                    "HOST": "127.0.0.1",
+                    "PORT": "5432",  # default port
             }
 }
 
