@@ -18,19 +18,20 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_ROOT = BASE_DIR +'/'+ 'static-root'
+STATIC_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
 
-MEDIA_ROOT = BASE_DIR +'/'+'media'
+MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/'
 MEDIA_URL = '/media/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = 'home'
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+ADMINS = (
+    ('Gleb Irovich', 'ch.cookiehunter@gmail.com'),
+)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -39,7 +40,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'uzh.cookiehunter@webfactional.com']
 
 LOGIN_REDIRECT_URL = '/'
 # Application definition
@@ -95,11 +96,11 @@ DATABASES = {
 
                 'default': {
                     "ENGINE": "django.db.backends.postgresql_psycopg2",
-                    "NAME": "slider",
-                    "USER": "admin",
-                    "PASSWORD": "admin",
-                    "HOST": "localhost",
-                    "PORT": "5432",  # default port
+                    "NAME": "uzh_slideshow",
+                    "USER": "uzh_slideshow",
+                    "PASSWORD": "superuser",
+                    "HOST": "",
+                    "PORT": "",  # default port
             }
 }
 
