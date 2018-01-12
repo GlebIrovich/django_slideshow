@@ -23,7 +23,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
 
 
-MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/'
+MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/media/'
 MEDIA_URL = '/media/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
