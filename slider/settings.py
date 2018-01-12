@@ -26,8 +26,6 @@ STATICFILES_DIRS = [BASE_DIR +'/'+ 'static']
 MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/'
 MEDIA_URL = '/media/'
 
-
-FORCE_SCRIPT_NAME = '/slider'
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = 'home'
 
