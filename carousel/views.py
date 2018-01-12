@@ -4,6 +4,7 @@ from .models import Presentation
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 
 from .scripts import unzip, generate_json
 
@@ -34,8 +35,8 @@ def upload_documents(request):
                 try:
                     path = newdoc.docfile.name
                     #path = path.docfile.name
-                    input_path = 'media/' + path
-                    output_path = 'media/' + os.path.dirname(path)
+                    input_path = settings.MEDIA_ROOT + path
+                    output_path = settings.MEDIA_ROOT + os.path.dirname(path)
                     
                     unzip(input_path, output_path)
                     # update path field
@@ -53,7 +54,7 @@ def upload_documents(request):
                 except Exception:
                     # Display error + Delete files
                     error = 'Import error.'
-                    path = 'media/' + os.path.dirname(newdoc.docfile.name)
+                    path = settings.MEDIA_ROOT + os.path.dirname(newdoc.docfile.name)
                     shutil.rmtree(path)
                     newdoc.delete()  # OUTCOMMENT
 
@@ -89,7 +90,7 @@ def DeleteList(request):
     try:
         for value in values:
             doc = Presentation.objects.get(pk = value)
-            path = 'media/' + os.path.dirname(doc.docfile.name)
+            path = settings.MEDIA_ROOT + os.path.dirname(doc.docfile.name)
             shutil.rmtree(path)
     except FileNotFoundError:
         pass

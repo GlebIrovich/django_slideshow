@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from django.conf import settings
 #from boto.s3.connection import S3Connection
 
 
@@ -30,7 +31,7 @@ def unzip(source_path, output_path): # ADD OUTPUT ? , output_path
 
 
 def generate_json(path, class_name):
-    path = 'media/' + path
+    path = settings.MEDIA_ROOT + path
     folders = os.listdir(path)
     folders = [x for x in folders if x[0]!='.']
     folders.sort()
