@@ -10,7 +10,6 @@ from .scripts import unzip, generate_json
 
 import os
 import shutil
-import json
 
 
 # Create your views here.
