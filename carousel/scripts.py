@@ -70,7 +70,7 @@ def generate_json(path, class_name):
 
             # Change subpath so that media correctly displayed
             
-            media_link = '/' + '/'.join(subpath.split('/')[-4:])
+            media_link = '/media/' + '/'.join(subpath.split('/')[-4:])
 
             for slide in slides:
                 dic['lectures']['lecture{}'.format(i)]['slides'][slide]=media_link + slide
