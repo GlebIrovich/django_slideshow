@@ -36,7 +36,7 @@ ADMINS = (
 
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY = os.environ.get('SECRET_KEY')
-SECRET_KEY = '99j*4yjjo=7!4vd4wqiumc-&7m=9vw1jc4+h0(h^#9u&+a+iyy' #os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
