@@ -14,7 +14,7 @@
         <div class="alert alert-dismissible alert-warning">
             <button type="button" class="close" data-dismiss="alert">&times;</button>
             <h4 class="alert-heading">Warning!</h4>
-            <p class="mb-0">{{error}} Please check <a href="#" class="alert-link">upload manual</a>.</p>
+            <p class="mb-0">{{error}} Please check <a href="{% url 'carousel:manual' %}" class="alert-link">upload manual</a>.</p>
         </div>
         {% endif %}
     
@@ -41,7 +41,7 @@
                     <div class="form-group">
                         <label for="id_docfile"><h5>Choose a file</h5></label>
                         <input id="docfile" type="file" name="docfile" class="form-control-file" aria-describedby="fileHelp">
-                        <small id="fileHelp" class="form-text text-muted">Please, read carefully the 'Upload manual'.</small>
+                        <small id="fileHelp" class="form-text text-muted">Please, read carefully the <a href="{% url 'carousel:manual' %}">'Upload manual'</a>.</small>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Upload</button>

@@ -45,7 +45,7 @@ def generate_json(path, class_name):
         
         subpath = path + '/' + folder + '/'
         # check if there is at least one JPEG in the directory
-        if len([check for check in os.listdir(subpath) if check[-3:] == 'jpg' ]) != 0:
+        if len([check for check in os.listdir(subpath) if (check[-3:] == 'jpg') or (check[-4:] == 'jpeg') or (check[-3:] == 'png')]) != 0:
         
             i+=1
             
@@ -64,7 +64,7 @@ def generate_json(path, class_name):
             
             # add inforamtion about slides' paths
             slides = os.listdir(subpath)
-            slides = [file for file in slides if file.endswith(".jpg")]
+            slides = [file for file in slides if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png")]
             slides.sort()
             dic['lectures']['lecture{}'.format(i)]['slides']={}
 

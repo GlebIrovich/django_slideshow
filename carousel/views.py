@@ -104,6 +104,12 @@ def DeleteList(request):
     
     return HttpResponseRedirect(reverse('carousel:upload'))
 
+# manual page
+@login_required
+def manual(request):
+    return render(
+        request, 'upload_manual.html'
+    )
 # LISTING FUNCTIONS
 
 def list_classes(request):

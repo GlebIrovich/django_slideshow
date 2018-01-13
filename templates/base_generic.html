@@ -39,6 +39,9 @@
             <a class="nav-link" href="{% url 'carousel:upload' %}"><h2>Upload presentation</h2></a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" href="{% url 'carousel:manual' %}"><h2>Upload manual</h2></a>
+          </li>
+          <li class="nav-item">
             <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><h2>Logout</h2></a>
           </li>   
           {% else %}

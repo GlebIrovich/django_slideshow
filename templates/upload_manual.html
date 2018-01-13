@@ -1,0 +1,44 @@
+{% extends "base_generic.html" %}
+
+{% block titles %}
+{% load static %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>List of courses</title>
+    </head>
+    <body>
+    <h2>Before unploading files</h2>
+    <ol>
+        <li type="1">
+            <p>Make sure, that your file structure looks as followed:</p>
+            <img src="{% static 'structure.png' %}" height="300">
+            <p>A class folder contains folders with lecture slides as well as the 'details.csv'</p>
+        </li>
+        <li type="1">
+            <p>Include the 'details.csv' file in every lecture folder</p>
+        </li>
+        <li type="1">
+            <p>Make sure that 'detail.csv' looks as followed:</p>
+            <img src="{% static 'details.png' %}" height="90">
+            <p>The first line indicates lecture title. Every next line contains 
+                subchapter's title and the slide number, where this subchapter starts.</p>
+        </li>
+        <li type="1">
+            <p>Please use only .jpg, .jpeg or .png for the slides. Other file formats will be ignored.</p>
+        </li>
+        <li type="1">
+            <p>Do <strong>NOT</strong> rename the compressed folder.</p>
+        </li>
+        <li type="1">
+            <p>You can use any names for the folders and slides,
+                 but it can affect their order - names are sorted alphabetically. </p>
+        </li>
+    </ol>
+
+
+        
+    </body>
+</html>
+
+{% endblock %}

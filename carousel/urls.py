@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^(?P<class_id>[0-9]+)/$', views.list_lectures, name='list_lectures'),
     # slideshow with subchapters
     url(r'^(?P<class_id>[0-9]+)/(?P<key>.*)/$', views.list_lectures, name='list_lectures'),
-
+    # upload manual
+    url(r'^upload_manual/$', views.manual, name= 'manual'),
     # /
 ]
