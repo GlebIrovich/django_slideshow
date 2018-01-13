@@ -67,8 +67,13 @@ def generate_json(path, class_name):
             slides = [file for file in slides if file.endswith(".jpg")]
             slides.sort()
             dic['lectures']['lecture{}'.format(i)]['slides']={}
+
+            # Change subpath so that media correctly displayed
+            
+            media_link = '/' + '/'.join(subpath.split('/').[-5:])
+
             for slide in slides:
-                dic['lectures']['lecture{}'.format(i)]['slides'][slide]=subpath + slide
+                dic['lectures']['lecture{}'.format(i)]['slides'][slide]=media_link + slide
     
     #encode=json.dumps(dic)   
     return dic
