@@ -13,7 +13,7 @@
 
                 <div class="item">
                 {% endif %}
-                    <img class="d-block w-100" src="{{slide}}">
+                    <img class="d-block w-100 mw-100" src="{{slide}}">
                 </div>
                 {% endfor %}
             </div>
@@ -69,7 +69,7 @@
 {% block content %} 
 {% if error %} <h1>{{ error }} </h1> {% endif %}
 {% if slides %}
-    
+
 <div id="carousel-b" class="carousel slide carousel-sync" data-ride="carousel" data-interval="false">
     <div class="carousel-inner">
         {% for slide in slides%}
@@ -95,6 +95,25 @@
 </div>
       
     {% endif %}
-<button class="btn btn-primary" id="fullscreen">Fullscreen</button>
 
+{% endblock %}
+
+{% block comments_form %}
+{% include "comments_form.html" %}
+{% endblock %}
+
+{% block comments %}
+<div id="comments">
+{% include "comments.html" %}
+</div>
+{% if comments %}
+<div align = "center" style="margin-bottom:30px;">
+    <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Comments</a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block java_script %}
+{% include 'post_script.html' %}
 {% endblock %}

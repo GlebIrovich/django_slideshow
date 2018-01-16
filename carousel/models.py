@@ -16,5 +16,14 @@ class Presentation(models.Model):
     title = models.CharField( max_length=100, default='noname')
     docfile = models.FileField(upload_to=user_directory_path)
     json = JSONField()
-    def __str__(self):
-        return self.name
+
+class PostComment(models.Model):
+    author = models.TextField()
+    slide = models.IntegerField(default= 0)
+    text = models.TextField()
+    lecture = models.TextField()
+    class_id = models.ForeignKey( Presentation, on_delete = models.CASCADE)
+
+
+    # Time is a rhinocerous
+    created = models.DateTimeField(auto_now_add=True)

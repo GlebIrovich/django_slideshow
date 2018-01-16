@@ -1,10 +1,13 @@
 from django.shortcuts import render
-from .forms import DocumentForm
-from .models import Presentation
-from django.http import HttpResponseRedirect, HttpResponse
+from .forms import DocumentForm, PostForm
+from .models import Presentation, PostComment
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.views import View
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.template import loader
 
 from .scripts import unzip, generate_json
 
@@ -118,61 +121,194 @@ def list_classes(request):
         request, 'classes.html',
         {'documents':documents}
     )
-
-def list_lectures(request, class_id, key = None):
-    # generate list of lectures
-    document = Presentation.objects.get(pk=class_id)
-    dic = document.json
-    # check if JSON was correctly saved and stored
-    if type(dic) == dict:
-        lectures = list(dic['lectures'].keys())
-        titles = []
-        for lecture in lectures:
-            # list tuples (key, value)
-            titles.append(
-                (lecture , dic['lectures'][lecture]['lecture_title']))
-        lectures = titles
-        # generate list of subchapters
-        if key == None:
-            key = lectures[0][0]
-        
-        if 'subchapters' in dic['lectures'][key]:
-            subchapters = list(dic['lectures'][key]['subchapters'].keys())
+  
+class ListLectures(View):
+    
+    # define dict generating function
+    def list_lectures(self, request, class_id, key = None):
+        # generate list of lectures
+        self.document = Presentation.objects.get(pk=class_id)
+        dic = self.document.json
+        # check if JSON was correctly saved and stored
+        if dic['lectures'].keys():
+            lectures = list(dic['lectures'].keys())
             titles = []
-            for sub in subchapters:
-                # list tuples (title , slide)
+            for lecture in lectures:
+                # list tuples (key, value)
                 titles.append(
-                    (
-                    dic['lectures'][key]['subchapters'][sub]['title'],
-                    int(dic['lectures'][key]['subchapters'][sub]['slide'])-1 # -1 to get position of the slide with Title
+                    (lecture , dic['lectures'][lecture]['lecture_title']))
+            self.lectures = titles
+            
+            # generate list of subchapters
+            # if key is none (first page after redirect) display first lecture
+            if key == None:
+                key = self.lectures[0][0]
+            
+            if 'subchapters' in dic['lectures'][key]:
+                subchapters = list(dic['lectures'][key]['subchapters'].keys())
+                titles = []
+                for sub in subchapters:
+                    # list tuples (title , slide)
+                    titles.append(
+                        (
+                        dic['lectures'][key]['subchapters'][sub]['title'],
+                        int(dic['lectures'][key]['subchapters'][sub]['slide'])-1 # -1 to get position of the slide with Title
+                        )
                     )
-                )
-            subchapters = titles
+                self.subchapters = titles
+            else:
+                self.subchapters = ''
+
+            # generate slides
+            self.key = key
+            self.slides = list(dic['lectures'][key]['slides'].values())
+            self.length = range(0, len(self.slides))
+            self.error = ''
+        # return empty variables if there was no dictionary
         else:
-            subchapters = ''
+            self.lectures = ''
+            self.subchapters =''
+            self.slides =''
+            self.key = ''
+            self.length = ''
+            self.error = 'JSON does not exist or damaged'
 
-        # generate slides
+    def get(self, request, *args, **kwargs):
         
-        slides = list(dic['lectures'][key]['slides'].values())
-        length = range(0, len(slides))
-        error = ''
-    # return empty variables if there was no dictionary
+        # get required parameters to list leectures
+        try:
+            self.list_lectures(request, kwargs['class_id'], kwargs['key'])
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture=kwargs['key']).order_by('-created')[:2] # get 2 posts per page
+        except KeyError:
+            self.list_lectures(request, kwargs['class_id'])
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by('-created') [:2]
+        
+        
+
+        return render(
+            request, 'lectures.html', 
+            {'lectures':self.lectures,
+            'document': self.document,
+            'subchapters':self.subchapters,
+            'slides':self.slides,
+            'key': self.key,
+            'length': self.length,
+            'error': self.error,
+            'comments': self.comments}
+        )
+
+    # def post(self, request, *args, **kwargs):
+    #     # get required parameters to list leectures
+    #     #self.list_lectures(request, kwargs['class_id'], kwargs['key'])
+    #     self.list_lectures(request, 84)
+    #     # get values from form
+    #     form = PostForm(request.POST)
+        
+    #     if form.is_valid():
+    #         newdoc = PostComment(author = request.POST['author'], 
+    #                             slide = 1,
+    #                             text = request.POST['text'] )
+    #         newdoc.save()
+    #         comments = PostComment.objects.all().order_by('-created')
+    #             # check if there was a delete command
+
+            
+
+    #         return render(
+    #             request, 'lectures.html', 
+    #             {'lectures':self.lectures,
+    #             'document': self.document,
+    #             'subchapters':self.subchapters,
+    #             'slides':self.slides,
+    #             'key': self.key,
+    #             'length': self.length,
+    #             'error': self.error,
+    #             'comments': comments,
+    #             'comment_id': self.comment_id
+    #             }
+    #             )
+
+def create_post(request, **kwargs):
+
+    if request.method == 'POST':
+        post_text = request.POST.get('the_post_text', '')
+        post_author = request.POST.get('the_post_author', '')
+        class_id = request.POST.get('class_id', '')
+        slide = request.POST.get('slide', '')
+        if request.POST.get('key', ''):
+            lecture = request.POST.get('key', '')
+        else:
+            lecture = 'lecture1'
+        response_data = {}
+
+        post = PostComment(author = post_author, 
+                                slide = slide,
+                                text = post_text,
+                                class_id_id = Presentation.objects.get(pk = class_id).id,
+                                lecture = lecture 
+                                )
+        post.save()
+
+        response_data['result'] = 'Create post successful!'
+        response_data['postpk'] = post.pk
+        response_data['text'] = post.text
+        response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
+        response_data['author'] = post.author
+        response_data['slide'] = post.slide
+
+        
+        
+        return JsonResponse(response_data)
     else:
-        subchapters =''
-        slides =''
-        key = ''
-        length = ''
-        error = 'JSON does not exist or damaged'
+       return JsonResponse(
+           ({"nothing to see": "this isn't happening"}))
 
 
-    return render(
-        request, 'lectures.html', 
-        {'lectures':lectures,
-        'document': document,
-        'subchapters':subchapters,
-        'slides':slides,
-        'key': key,
-        'length': length,
-        'error': error}
-    )
+def delete_post(request, **kwargs):
 
+    if request.method == 'POST':
+        comment_id = request.POST.get('comment_id', '')
+        response_data = {}
+
+        post = PostComment.objects.get(pk = comment_id )
+        post.delete()
+
+        response_data['result'] = 'Comment successfuly deleted!'
+        
+        return JsonResponse(response_data)
+    else:
+       return JsonResponse(
+           ({"nothing to see": "this isn't happening"}))
+
+def lazy_load(request):
+    page = request.POST.get("page")
+    class_id = request.POST.get('class_id', '')
+    # check if key was transmitted
+    if request.POST.get('key', ''):
+        lecture = request.POST.get('key', '')
+    else:
+        lecture = 'lecture1'
+    comments = PostComment.objects.filter(class_id_id=class_id, lecture=lecture).order_by('-created') # get just 2 posts
+    # use Django’s pagination
+
+    results_per_page = 2
+    paginator = Paginator(comments, results_per_page)
+    try:
+        comments = paginator.page(page)
+    except PageNotAnInteger:
+        comments = paginator.page(2)
+    except EmptyPage:
+        comments = paginator.page(paginator.num_pages)
+    # build a html posts list with the paginated posts
+    comments_html = loader.render_to_string(
+                                'comments.html',
+                                {'comments': comments,
+                                # send user to know if he is auth
+                                'user':request.user}
+                                )
+    # package output data and return it as a JSON object
+    output_data = {
+                    'comments_html': comments_html,
+                    'has_next': comments.has_next()
+    }
+    return JsonResponse(output_data)

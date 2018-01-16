@@ -1,0 +1,145 @@
+<script>
+    // Submit post on submit
+    $('#post-form').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!");  // sanity check        
+        create_post();
+    });
+
+    // AJAX for posting
+    function create_post() {
+        console.log("create post is working!") // sanity check
+
+        var url_to = '/ajax/post/';
+        console.log(url_to);
+        var activeSlide = getActiveSlide();
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    the_post_author : $('#post-author').val(), 
+                    the_post_text : $('#post-text').val(),
+                    class_id: "{{document.id}}",
+                    key: "{{ key }}",
+                    slide: activeSlide}, // data sent with the post request
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                $('#post-author').val('');
+                
+                
+                console.log(json); // log the returned json to the console
+                $('#comments').prepend(
+                    '<div class="container" id='
+                        + json.postpk +
+                    '><div class="panel panel-white post panel-shadow">{% if user.is_authenticated %}<div class="pull-right m-3">' +
+                    '<input id="delete" type="hidden" /><button type="button" class="close delete-post" id='
+                        + json.postpk +
+                    '>&times;</button></div>{% endif %}' +
+                    '<div class="post-heading" id="comment-heading"><div class="pull-left meta"><div class="title h5"><b>'
+                        + json.author +
+                    '</b> made a comment on slide <a href="#carousel" data-slide-to = "'+ json.slide +'">#' 
+                        + json.slide +
+                    '</a></div><h6 class="text-muted time">'
+                        + json.created + 
+                    '</h6></div></div><div class="post-description"><p>'
+                        + json.text + 
+                    '</p></div></div></div>'
+                )
+                console.log("success"); // another sanity check
+            },
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    };
+
+
+    // Delete post on delete
+    $('#comments').on('click','.delete-post' , function(event){
+        event.preventDefault();
+        console.log("form delete pressed!");  // sanity check        
+        var id = $(this).attr('id');
+        console.log('Button id= ' + id);
+        delete_post(id);
+    });
+    // AJAX for deleting
+    function delete_post(id) {
+        console.log("delete post is working!") // sanity check
+
+        var url_to = '/ajax/delete/';
+        console.log(url_to);
+    
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    comment_id: id },// data sent with the post request
+            // handle a successful response
+            success : function(json) {
+                
+                console.log(json); // log the returned json to the consol
+                $("div.container#"+id).remove();
+                // $("#talk").prepend("<li><strong>"+json.text+"</strong> - <em> "+json.author+"</em> - <span> "+json.created+
+                //     "</span> - <a id='delete-post-"+json.postpk+"'>delete me</a></li>");
+                console.log("success"); // another sanity check
+            },
+            // handle a non-successful response
+            error : function() {
+                $('#results').html("<div><h3>Oops! We have encountered an error: please reload the page</h3></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    };
+
+    function getActiveSlide(){
+        var activeSlide = $('#carousel-b .active').index('#carousel-b .item')
+        return activeSlide
+    };
+
+    // LAZY LOAD
+    (function($) {
+        $('#lazyLoadLink').on('click', function() {
+            console.log('Click on lazy load');
+            
+            var link = $(this);
+            var page = link.data('page');
+            console.log(page);
+            
+            $.ajax({
+            type: 'post',
+            url: '/ajax/lazy_load/',
+            data: {
+                'page': page,
+                'csrfmiddlewaretoken': '{{ csrf_token}}',
+                class_id: "{{document.id}}",
+                key: "{{ key }}" // from index.html
+            },
+            success: function(data) {
+                console.log('Success');
+                
+                // if there are still more pages to load,
+                // add 1 to the "Load More Posts" link's page data attribute
+                // else hide the link
+                if (data.has_next) {
+                    link.data('page', page+1);
+                } else {
+                link.hide();
+                }
+                // append html to the posts div
+                console.log(data.comments_html);
+                
+                $('#comments').append(data.comments_html);
+            },
+            error: function(xhr, status, error) {
+                // shit happens 
+                console.log('Error');
+                
+            }
+            });
+        });
+    }(jQuery));
+</script>
