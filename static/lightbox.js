@@ -124,7 +124,7 @@ var lazyLoad ={
     }, 
     status: function(slide){
         // return true if link is needed
-        var result = (this.totalNumberOfCommentsX(slide) < this.currentNumber) ?  true :  false;
+        var result = (this.totalNumberOfCommentsX(slide) <= this.currentNumber) ?  true :  false;
         return result
     } ,
     reset: function(){
