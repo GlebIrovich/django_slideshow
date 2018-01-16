@@ -9,7 +9,7 @@ __pycache__
 settings_local.py
 
 **/media
-**/migrations
+
 wsgi_local.py
 
 .env
