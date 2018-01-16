@@ -178,13 +178,10 @@ class ListLectures(View):
         # get required parameters to list leectures
         try:
             self.list_lectures(request, kwargs['class_id'], kwargs['key'])
-            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture=kwargs['key']).order_by('-created')[:2] # get 2 posts per page
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture=kwargs['key']).order_by('slide', '-created') 
         except KeyError:
             self.list_lectures(request, kwargs['class_id'])
-            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by('-created') [:2]
-        
-        
-
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by( 'slide', '-created')
         return render(
             request, 'lectures.html', 
             {'lectures':self.lectures,
@@ -196,37 +193,6 @@ class ListLectures(View):
             'error': self.error,
             'comments': self.comments}
         )
-
-    # def post(self, request, *args, **kwargs):
-    #     # get required parameters to list leectures
-    #     #self.list_lectures(request, kwargs['class_id'], kwargs['key'])
-    #     self.list_lectures(request, 84)
-    #     # get values from form
-    #     form = PostForm(request.POST)
-        
-    #     if form.is_valid():
-    #         newdoc = PostComment(author = request.POST['author'], 
-    #                             slide = 1,
-    #                             text = request.POST['text'] )
-    #         newdoc.save()
-    #         comments = PostComment.objects.all().order_by('-created')
-    #             # check if there was a delete command
-
-            
-
-    #         return render(
-    #             request, 'lectures.html', 
-    #             {'lectures':self.lectures,
-    #             'document': self.document,
-    #             'subchapters':self.subchapters,
-    #             'slides':self.slides,
-    #             'key': self.key,
-    #             'length': self.length,
-    #             'error': self.error,
-    #             'comments': comments,
-    #             'comment_id': self.comment_id
-    #             }
-    #             )
 
 def create_post(request, **kwargs):
 
@@ -283,6 +249,7 @@ def delete_post(request, **kwargs):
 def lazy_load(request):
     page = request.POST.get("page")
     class_id = request.POST.get('class_id', '')
+    #slide = request.POST.get('slide', '')
     # check if key was transmitted
     if request.POST.get('key', ''):
         lecture = request.POST.get('key', '')

@@ -2,7 +2,7 @@
 {% if comments %}
 {% for comment in comments %}
 
-    <div class="container" id={{comment.id}}>
+    <div class="container" id={{comment.id}} data-slide ="{{ comment.slide }}">
         <div class="panel panel-white post panel-shadow">
             {% if user.is_authenticated %}
             <div class="pull-right m-3">

@@ -32,7 +32,9 @@
                 $('#comments').prepend(
                     '<div class="container" id='
                         + json.postpk +
-                    '><div class="panel panel-white post panel-shadow">{% if user.is_authenticated %}<div class="pull-right m-3">' +
+                    ' data-slide ="'
+                        + json.slide +
+                    '"><div class="panel panel-white post panel-shadow">{% if user.is_authenticated %}<div class="pull-right m-3">' +
                     '<input id="delete" type="hidden" /><button type="button" class="close delete-post" id='
                         + json.postpk +
                     '>&times;</button></div>{% endif %}' +
@@ -97,46 +99,67 @@
         var activeSlide = $('#carousel-b .active').index('#carousel-b .item')
         return activeSlide
     };
+    // Display only related comments
+    function changeComments(active){
+        var $allContainers = $( "#comments" ).find( "*.container" );
+        var $allA = $( "#comments" ).find( "*a" );
+        //console.log('Length container ' + $allContainers.length);
+        //console.log('Length all ' + $allA.length);
+
+        
+        for (i = 0; i < $allA.length; i++){
+            if (parseInt($allA[i].dataset.slideTo)  != active) {
+                //console.log('Wrong comment = ' + $allA[i].dataset.slideTo);
+                $allContainers[i].style.display = 'none';
+                
+            } else{
+                $allContainers[i].style.display = 'block';
+            };
+        };
+    };
 
     // LAZY LOAD
-    (function($) {
-        $('#lazyLoadLink').on('click', function() {
-            console.log('Click on lazy load');
+    // (function($) {
+    //     $('#lazyLoadLink').on('click', function() {
+    //         console.log('Click on lazy load');
             
-            var link = $(this);
-            var page = link.data('page');
-            console.log(page);
+    //         var link = $(this);
+    //         var page = link.data('page');
+    //         console.log(page);
             
-            $.ajax({
-            type: 'post',
-            url: '/ajax/lazy_load/',
-            data: {
-                'page': page,
-                'csrfmiddlewaretoken': '{{ csrf_token}}',
-                class_id: "{{document.id}}",
-                key: "{{ key }}" // from index.html
-            },
-            success: function(data) {
-                console.log('Success');
+    //         $.ajax({
+    //         type: 'post',
+    //         url: '/ajax/lazy_load/',
+    //         data: {
+    //             'page': page,
+    //             'csrfmiddlewaretoken': '{{ csrf_token}}',
+    //             class_id: "{{document.id}}",
+    //             key: "{{ key }}",
+    //             slide: getActiveSlide()
+    //         },
+    //         success: function(data) {
+    //             console.log('Success');
                 
-                // if there are still more pages to load,
-                // add 1 to the "Load More Posts" link's page data attribute
-                // else hide the link
-                if (data.has_next) {
-                    link.data('page', page+1);
-                } else {
-                link.hide();
-                }
-                // append html to the posts div
+    //             // if there are still more pages to load,
+    //             // add 1 to the "Load More Posts" link's page data attribute
+    //             // else hide the link
+    //             if (data.has_next) {
+    //                 link.data('page', page+1);
+    //             } else {
+    //             link.hide();
+    //             }
+    //             // append html to the posts div
                 
-                $('#comments').append(data.comments_html);
-            },
-            error: function(xhr, status, error) {
-                // shit happens 
-                console.log('Error');
+    //             $('#comments').append(data.comments_html);
+    //             changeComments(getActiveSlide());
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // shit happens 
+    //             console.log('Error');
                 
-            }
-            });
-        });
-    }(jQuery));
+    //         }
+    //         });
+    //     });
+    // }(jQuery));
+
 </script>
