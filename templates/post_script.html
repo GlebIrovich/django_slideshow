@@ -39,7 +39,7 @@
                     '<div class="post-heading" id="comment-heading"><div class="pull-left meta"><div class="title h5"><b>'
                         + json.author +
                     '</b> made a comment on slide <a href="#carousel" data-slide-to = "'+ json.slide +'">#' 
-                        + json.slide +
+                        + (parseInt(json.slide) + 1) + // to avoid counting from 0
                     '</a></div><h6 class="text-muted time">'
                         + json.created + 
                     '</h6></div></div><div class="post-description"><p>'
@@ -83,8 +83,6 @@
                 
                 console.log(json); // log the returned json to the consol
                 $("div.container#"+id).remove();
-                // $("#talk").prepend("<li><strong>"+json.text+"</strong> - <em> "+json.author+"</em> - <span> "+json.created+
-                //     "</span> - <a id='delete-post-"+json.postpk+"'>delete me</a></li>");
                 console.log("success"); // another sanity check
             },
             // handle a non-successful response
@@ -130,7 +128,6 @@
                 link.hide();
                 }
                 // append html to the posts div
-                console.log(data.comments_html);
                 
                 $('#comments').append(data.comments_html);
             },

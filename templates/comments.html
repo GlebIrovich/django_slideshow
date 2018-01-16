@@ -15,7 +15,7 @@
             <div class="post-heading" id="comment-heading">
                 <div class="pull-left meta">
                     <div class="title h5">
-                        <b>{{ comment.author }}</b> made a comment on slide <a href="#carousel" data-slide-to = "{{ comment.slide }}">#{{ comment.slide }}</a>
+                        <b>{{ comment.author }}</b> made a comment on slide <a href="#carousel" data-slide-to = "{{ comment.slide }}">#{{ comment.slide|add:1 }}</a>
                     </div>
                     <h6 class="text-muted time">{{ comment.created }}</h6>
                 </div>
