@@ -51,7 +51,6 @@ LOGIN_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'slider',
     'carousel',
-    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,10 +138,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# BOOTSTRAP 3
-
-BOOTSTRAP3 = { 'theme_url': '/static/bootstrap/css/bootstrap.css', 
-                'javascript_url': '/static/bootstrap/js/bootstrap.min.js',
-                'jquery_url': '/static/bootstrap/js/jquery-3.2.1.js',}

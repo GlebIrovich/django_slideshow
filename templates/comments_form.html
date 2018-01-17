@@ -3,18 +3,18 @@
     <fieldset>
         {% csrf_token %} 
         <div class="form-group">
-        <label for="exampleInputEmail1">Author</label>
+        <p style="font-size:12pt;" >Author</p>
         <input type="author" class="form-control" id="post-author" aria-describedby="emailHelp" placeholder="Your name" style="font-size:14px">
 
         </div>
 
         <div class="form-group">
-        <label for="exampleTextarea">You comment</label>
-        <textarea class="form-control" id="post-text" rows="3" data-gramm="true" data-txt_gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" data-gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" spellcheck="false" data-gramm_editor="true" style="z-index: auto; position: relative; line-height: 22.5px; font-size: 13px; transition: none; background: transparent !important;"></textarea>
+        <p style="font-size:12pt;">You comment</p>
+        <textarea class="form-control" id="post-text" rows="3" data-gramm="true" data-txt_gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" data-gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" spellcheck="false" data-gramm_editor="true" style="z-index: auto; position: relative; line-height: 22.5px; font-size: 13px; transition: none; background: white"></textarea>
         </div>
 
         <div id="results"></div> <!-- errors go here -->
-        <input type="submit" value="Post" class="tiny button pull-right">
+        <input type="submit" value="Post" class="tiny button pull-right" style="color:black">
     </fieldset>
     </form>
 </div>

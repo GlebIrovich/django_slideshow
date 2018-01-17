@@ -19,6 +19,17 @@ $('.lightbox').on('click', function(e) {
     }
 })
 
+$(document).keydown(function(e) {
+    if( e.keyCode === 27 ) {
+        lightbox.style.display = 'none';
+    }
+});
+// close pressing cross
+$('.closex').click(function(e) {
+    lightbox.style.display = 'none';
+})
+    
+
 // Sync slider
 $('#carousel-b').on('click','a',function(e){
     lazyLoad.displayOnly(nextPrev(e, 'b'))
@@ -42,6 +53,15 @@ $('.controls').on('click','a',function(e){
     var link = parseInt(this.getAttribute('data-slide-to'));
     lazyLoad.displayOnly(link);
     lazyLoad.linkAction(link);
+
+    // change active color
+    if($(".chosen").length){
+        $(".chosen")[0].classList.remove('chosen')
+    };
+
+    this.classList.add("chosen");
+
+
     $('#carousel-a').carousel(link);
     $('#carousel-b').carousel(link);
 });
@@ -54,25 +74,6 @@ $('#comments').on('click','a',function(e){
     $('#carousel-a').carousel(parseInt(link));
     $('#carousel-b').carousel(parseInt(link));
 });
-
-// Display only related comments
-// function changeComments(active){
-//     var $allContainers = $( "#comments" ).find( "*.container" );
-//     var $allA = $( "#comments" ).find( "*a" );
-//     //console.log('Length container ' + $allContainers.length);
-//     //console.log('Length all ' + $allA.length);
-
-    
-//     for (i = 0; i < $allA.length; i++){
-//         if (parseInt($allA[i].dataset.slideTo)  != active) {
-//             //console.log('Wrong comment = ' + $allA[i].dataset.slideTo);
-//             $allContainers[i].style.display = 'none';
-            
-//         } else{
-//             $allContainers[i].style.display = 'block';
-//         };
-//     };
-// };
 
 function activeSlide(){
     var activeSlide = $('#carousel-b .active').index();
@@ -165,3 +166,68 @@ $('#lazyLoadLink').on('click', function(){
     lazyLoad.displayOnly(activeSlide());
     lazyLoad.linkAction(activeSlide());
 });
+
+// Normalize bootstrap carousel hight
+// function carouselNormalization() {
+//     var items = $('#carousel-b .item'), //grab all slides
+//         heights = [], //create empty array to store height values
+//         tallest; //create variable to make note of the tallest slide
+    
+//     if (items.length) {
+//         function normalizeHeights() {
+//             items.each(function() { //add heights to array
+//                 heights.push($(this).height()); 
+//             });
+//             tallest = Math.max.apply(null, heights); //cache largest value
+//             items.each(function() {
+//                 $(this).css('min-height',tallest + 'px');
+//             });
+//         };
+//         normalizeHeights();
+    
+//         $(window).on('resize orientationchange', function () {
+//             tallest = 0, heights.length = 0; //reset vars
+//             items.each(function() {
+//                 $(this).css('min-height','0'); //reset min-height
+//             }); 
+//             normalizeHeights(); //run it again 
+//         });
+//     }
+//     }
+//     $(document).ready(carouselNormalization);
+
+// double tap
+(function($){
+
+    $.event.special.doubletap = {
+      bindType: 'touchend',
+      delegateType: 'touchend',
+  
+      handle: function(event) {
+        var handleObj   = event.handleObj,
+            targetData  = jQuery.data(event.target),
+            now         = new Date().getTime(),
+            delta       = targetData.lastTouch ? now - targetData.lastTouch : 0,
+            delay       = delay == null ? 300 : delay;
+  
+        if (delta < delay && delta > 30) {
+          targetData.lastTouch = null;
+          event.type = handleObj.origType;
+          ['clientX', 'clientY', 'pageX', 'pageY'].forEach(function(property) {
+            event[property] = event.originalEvent.changedTouches[0][property];
+          })
+  
+          // let jQuery handle the triggering of "doubletap" event handlers
+          handleObj.handler.apply(this, arguments);
+        } else {
+          targetData.lastTouch = now;
+        }
+      }
+    };
+  
+  })(jQuery);
+
+  // doubletouch
+  $('#carousel-b').on('doubletap',function(e){
+        lightbox.style.display = 'block';
+    });

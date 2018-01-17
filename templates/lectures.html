@@ -1,8 +1,10 @@
 {% extends "base_generic.html" %}
-
+{% load static %}
 {% block lightbox %}
+
 <div class="lightbox">
-    <div class="lightbox-container">
+        <a href="#" class="closex"></a>
+    <div class="lightbox-container" >
 
         <div id="carousel-a" class="carousel slide carousel-sync" data-ride="carousel" data-interval="false">
             <div class="carousel-inner">
@@ -13,7 +15,7 @@
 
                 <div class="item">
                 {% endif %}
-                    <img class="d-block w-100 mw-100" src="{{slide}}">
+                    <img class="carousel-a" src="{{slide}}">
                 </div>
                 {% endfor %}
             </div>
@@ -39,59 +41,48 @@
 </head>
 
 <!-- List of uploaded documents -->
-{% if lectures %}
-
-<ul>
-{% for key_curent, title in lectures %}
-    <p><a href="{% url 'carousel:list_lectures' document.id key_curent %}"> <h3>{{ title }}</h3>  </a></p>
-
-    {% if subchapters %}
-        
-        {% if key_curent == key %}
-            <ul class='controls'>
-            {% for title, position in subchapters %}
-                <p><a href="#carousel" data-slide-to = "{{ position }}" style="color:rgb(56, 56, 155);"><h4>{{ title }}</h4></a></p>
-            {% endfor %}
-            </ul>
-        {% endif %}  
-        
-    {% endif %}
-
-{% endfor %}
-</ul>
-
-{% else %}
-    <p>No lectures uploaded.</p>
-{% endif %}
+{% include 'chapters.html' %}
 
 {% endblock %}
     
+
+{% block titles %}
+<!-- Title -->
+<div align = "center">
+    <h2>{{ document.title }}</h2>
+</div>  
+{% endblock %}
+
 {% block content %} 
+
+
+
 {% if error %} <h1>{{ error }} </h1> {% endif %}
 {% if slides %}
+<div>
+    <div id="carousel-b" class="carousel slide carousel-sync" data-ride="carousel" data-interval="false">
+        <div class="carousel-inner">
+            {% for slide in slides%}
+            {% if forloop.first%}
+            <div class="item active">
+            {% else %}  
 
-<div id="carousel-b" class="carousel slide carousel-sync" data-ride="carousel" data-interval="false">
-    <div class="carousel-inner">
-        {% for slide in slides%}
-        {% if forloop.first%}
-        <div class="item active">
-        {% else %}  
-
-        <div class="item">
-        {% endif %}
-            <img class="d-block w-100" src="{{slide}}">
+            <div class="item">
+            {% endif %}
+                <img class="carousel-b" src="{{slide}}">
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
 
-    <a class="carousel-control-prev" href="#carousel-b" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carousel-b" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
+        <a class="carousel-control-prev" href="#carousel-b" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carousel-b" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
 </div>
       
     {% endif %}
@@ -109,7 +100,7 @@
 
 {% if comments %}
 <div align = "center" style="margin-bottom:30px;">
-    <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Comments</a>
+    <a id="lazyLoadLink" href="javascript:void(0);" data-page="2" style="color:white !important;">Load More Comments</a>
 </div>
 {% endif %}
 

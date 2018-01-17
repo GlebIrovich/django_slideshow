@@ -1,0 +1,32 @@
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="navbar-header" >
+    <a class="navbar-brand" href="#" align="middle"><h1>UZH presetation sharing</h1></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+        <a class="nav-link" href="{% url 'carousel:list_classes' %}"><h2>Home</h2> <span class="sr-only">(current)</span></a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'carousel:upload' %}"><h2>Upload presentation</h2></a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'carousel:manual' %}"><h2>Upload manual</h2></a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><h2>Logout</h2></a>
+        </li>   
+        {% else %}
+        <li class="nav-item">
+        <a class="nav-link my-2 my-sm-0" href="{% url 'login'%}?next={{request.path}}"><h2>Login<h2></a>
+        </li>   
+        {% endif %} 
+    </ul>
+    </div>
+</nav>

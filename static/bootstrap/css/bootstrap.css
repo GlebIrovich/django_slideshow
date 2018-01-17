@@ -69,7 +69,8 @@ MY OWN
    }
    a,
    a:visited {
-     text-decoration: underline;
+     text-decoration: none;
+     color:yellow;
    }
    abbr[title]::after {
      content: " (" attr(title) ")";
@@ -123,6 +124,7 @@ MY OWN
  *::after {
    -webkit-box-sizing: border-box;
            box-sizing: border-box;
+           object-fit: contain;
  }
  
  html {
@@ -148,9 +150,11 @@ MY OWN
    font-size: 0.9375rem;
    font-weight: 400;
    line-height: 1.5;
-   color: #222;
+   color: white;
    text-align: left;
-   background-color: #fff;
+   background-color: #2D3289;
+   
+   overflow-y:scroll; 
  }
  
  [tabindex="-1"]:focus {
@@ -246,15 +250,15 @@ MY OWN
  }
  
  a {
-   color: #008cba;
+   color: white;
    text-decoration: none;
    background-color: transparent;
    -webkit-text-decoration-skip: objects;
  }
  
  a:hover {
-   color: #00526e;
-   text-decoration: underline;
+   color: #FABD2F;
+   text-decoration: none;
  }
  
  a:not([href]):not([tabindex]) {
