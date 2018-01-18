@@ -67,12 +67,12 @@ $('.controls').on('click','a',function(e){
 });
 // add color to A after load
 
-// $(document).ready(function() {
-//     if ($('.controls').find("a").length) {
-//         $('.controls').find("a")[0].classList.add("chosen");
-//         $('.controls').parent().find("#chapter-link")[0].classList.add("chosen-main");
-//     }
-// });
+$(document).ready(function() {
+    if ($('.controls').find("a").length) {
+        $('.controls').find("a")[0].classList.add("chosen");
+      //  $('.controls').parent().find("#chapter-link")[0].classList.add("chosen-main");
+    }
+});
 
 // move carousel from comments link
 
