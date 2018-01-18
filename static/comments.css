@@ -1,10 +1,10 @@
 
-.panel-shadow {
+/* .panel-shadow {
     box-shadow: rgba(0, 0, 0, 0.3) 7px 7px 7px;
-}
-.panel-white {
+} */
+/* .panel-white {
   border: 1px solid #dddddd;
-}
+} */
 .panel-white  .panel-heading {
   color: #333;
   background-color: #fff;
@@ -44,6 +44,7 @@
 }
 .post .post-description {
   padding: 15px;
+  padding-top: 0;
 }
 .post .post-description p {
   font-size: 14px;

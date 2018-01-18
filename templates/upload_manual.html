@@ -1,13 +1,10 @@
-{% extends "base_generic.html" %}
-
-{% block titles %}
+{% extends "base/base_generic.html" %}
 {% load static %}
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>Upload manual</title>
-    </head>
-    <body>
+
+
+{% block title %}<title>Upload manual</title> {% endblock %}
+{% block content %}
+
     <h2>Before uploading files</h2>
     <ol>
         <li type="1">
@@ -36,9 +33,5 @@
         </li>
     </ol>
 
-
-        
-    </body>
-</html>
 
 {% endblock %}

@@ -31,12 +31,20 @@ def unzip(source_path, output_path): # ADD OUTPUT ? , output_path
 
 
 def generate_json(path, class_name):
+    initial_path = path
     path = settings.MEDIA_ROOT + path
     folders = os.listdir(path)
-    folders = [x for x in folders if x[0]!='.']
+    folders = [x for x in folders if '.' not in x]
     folders.sort()
     dic = {}
     
+    allowed_formats = ('.jpg', '.png', '.jpeg')
+    
+    # get logo must be 200x200 and called logo
+    logo = [x for x in os.listdir(path) if x.lower().endswith(allowed_formats)]
+    if logo[0]:
+        dic['logo'] = '/media/' + initial_path + '/' + logo[0]
+        
     # change this line to the actual class name
     dic['class_title'] = class_name
     i = 0 
@@ -45,7 +53,7 @@ def generate_json(path, class_name):
         
         subpath = path + '/' + folder + '/'
         # check if there is at least one JPEG in the directory
-        if len([check for check in os.listdir(subpath) if (check[-3:] == 'jpg') or (check[-4:] == 'jpeg') or (check[-3:] == 'png')]) != 0:
+        if len([file for file in os.listdir(subpath) if file.lower().endswith(allowed_formats)]) != 0:
         
             i+=1
             
@@ -61,10 +69,14 @@ def generate_json(path, class_name):
                     dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]={}
                     dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['title'] = data.iloc[n][0]
                     dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['slide'] = data.iloc[n][1]
-            
+                    
+                    # save link if any
+                    if not pd.isnull(data.iloc[n][2]):
+                        dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['link'] = data.iloc[n][2]
+                        
             # add inforamtion about slides' paths
             slides = os.listdir(subpath)
-            slides = [file for file in slides if file.endswith(".jpg") or file.endswith(".jpeg") or file.endswith(".png")]
+            slides = [file for file in slides if file.lower().endswith(allowed_formats)]
             slides.sort()
             dic['lectures']['lecture{}'.format(i)]['slides']={}
 

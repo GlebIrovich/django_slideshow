@@ -1,0 +1,89 @@
+{% extends "base/base_generic.html" %}
+{% load static %}
+
+<!-- Update header title -->
+{% block title %} <title>List of courses</title> {% endblock %}
+
+
+{% block lightbox %}
+{% include 'lectures/lightbox.html' %}
+{% endblock %}
+
+{% block content %}
+
+<!-- Error block -->
+{% if error %} <h1>{{ error }} </h1> {% endif %}
+
+<!-- ROW FOR CHAPTERS AND CAROUSEL -->
+<div class="row blue">
+    <!-- LEFT COLUMN -->
+    <div class="col-md-3">
+        <div class="row">
+            <!-- logo -->
+            {% include 'lectures/logo.html' %}
+        </div>
+        <div class="row text-right pull-right">
+            <!-- List of chapters and subchapters -->
+            {% include 'lectures/chapters.html' %}
+        </div>
+    </div>
+    <!-- CENTRAL COLUMN -->
+    <div class="col-md-6">
+        <div class="row">
+            <!-- Lecture title -->
+            <div style="padding-left:20px">
+            <h2>{{ document.title }}</h2>
+            </div>
+        </div>
+        <div>
+            <!-- MAIN carouesl -->
+            {% include 'lectures/main_carousel.html' %}
+        </div>
+    </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-3"></div>
+</div>
+
+<!-- ROW FOR COMMENTS -->
+<div class="row white">
+    <!-- LEFT COLUMN -->
+    <div class="col-md-3"></div>
+    <!-- CENTRAL COLUMN -->
+    <div class="col-md-6">
+        <div>
+            <p><mark># contributors</mark></p>
+            <p>Markus M. Gleb I.</p>
+        </div>
+        <div>
+            <p><mark># your comments</mark></p>
+            <p>Help to further improve this slide. Share your thoughts (corrections, improvements, suggestions, general feedback).</p>
+        </div>
+        <div class="row">
+             <!-- Comment form -->
+            {% include "lectures/comments_form.html" %}
+        </div>
+        <div>
+            <!-- COMMENTS -->
+            <div>
+                <p><mark># comments history</mark></p>
+            </div>
+            <div id="comments">
+            {% include "lectures/comments.html" %}
+            </div>
+        </div>
+        <!-- LOAD MORE -->
+        {% if comments %}
+        <div align = "center" style="margin-bottom:30px;">
+            <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Comments</a>
+        </div>
+        {% endif %}
+    </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-3"></div>
+</div>
+
+{% endblock %}
+
+{% block java_script %}
+{% include 'lectures/post_script.html' %}
+{% endblock %}

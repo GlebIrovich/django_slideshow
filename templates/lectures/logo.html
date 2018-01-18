@@ -1,0 +1,15 @@
+{% if logo %}
+<div class="container">
+<div class="logo pull-right">
+    <img src="{{ logo }}">
+</div>
+</div>
+{% else %}
+<!-- empty element of the same size -->
+<div class="container">
+<div class="logo pull-right">
+    &nbsp;
+</div>
+</div>
+
+{% endif %}

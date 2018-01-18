@@ -146,13 +146,14 @@ MY OWN
  
  body {
    margin: 0;
-   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-   font-size: 0.9375rem;
-   font-weight: 400;
+   /*font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";*/
+   font-family: 'Josefin Sans', sans-serif;
+   font-size: 10pt;
+   font-weight: 300;
    line-height: 1.5;
-   color: white;
+   color: black;
    text-align: left;
-   background-color: #2D3289;
+   background-color: white;
    
    overflow-y:scroll; 
  }
@@ -250,7 +251,7 @@ MY OWN
  }
  
  a {
-   color: white;
+   color: black;
    text-decoration: none;
    background-color: transparent;
    -webkit-text-decoration-skip: objects;

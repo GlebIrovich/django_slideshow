@@ -1,70 +1,78 @@
-{% extends "base_generic.html" %}
-{% load bootstrap3 %}
+{% extends "base/base_generic.html" %}
+
+{% block title %}<title>Upload file</title>{% endblock %}
+
 {% block content %}
+<!-- ERRORS -->
+{% if error %}
+<div class="alert alert-dismissible alert-warning">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <h4 class="alert-heading">Warning!</h4>
+    <p class="mb-0">{{error}} Please check <a href="{% url 'carousel:manual' %}" class="alert-link">upload manual</a>.</p>
+</div>
+{% endif %}
 
 
-    <head>
-        <meta charset="utf-8">
-        <title>Upload file</title>
-    </head>
-    
-    <!--Display errors-->
-    {% if error %}
-    <div class="alert alert-dismissible alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <h4 class="alert-heading">Warning!</h4>
-        <p class="mb-0">{{error}} Please check <a href="{% url 'carousel:manual' %}" class="alert-link">upload manual</a>.</p>
-    </div>
-    {% endif %}
+<!-- ROW FOR UPLOAD AND DELETE -->
+<div class="row">
+        <!-- LEFT COLUMN -->
+        <div class="col-md-3"></div>
+        <!-- CENTRAL COLUMN -->
+        <div class="col-md-6">
+            <div class="row" style="padding-top: 20px;">
+                <div class="col">
+                <!-- Upload  -->
+                <!-- List of uploaded documents -->
+                {% if documents %}
+                
+                {% else %}
+                    <p>No presetations.</p>
+                {% endif %}
+                    <!-- Upload form. Note enctype attribute! -->
+                    <form action="{% url 'carousel:upload' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                        <fieldset>
+                            <p>{{ form.non_field_errors }}</p>
+                            <label for="id_title"><h5>Choose a title:</h5></label>
+                            <p><input id="id_title" type="text" name="title" maxlength="100" required /></p>
+                            </fieldset>
+                            <fieldset>
+                            <div class="form-group">
+                                <label for="id_docfile"><h5>Choose a file</h5></label>
+                                <input id="docfile" type="file" name="docfile" class="form-control-file" aria-describedby="fileHelp">
+                                <small id="fileHelp" class="form-text text-muted">Please, read carefully the <a href="{% url 'carousel:manual' %}">'Upload manual'</a>.</small>
+                            </div>
 
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </fieldset>
 
-    <!-- List of uploaded documents -->
-    {% if documents %}
+                    </form>
 
-    {% else %}
-        <p>No presetations.</p>
-    {% endif %}
-
-    <div class="row">
-    <div class="col-sm-4">
-
-        <!-- Upload form. Note enctype attribute! -->
-        <form action="{% url 'carousel:upload' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-            <fieldset>
-                <p>{{ form.non_field_errors }}</p>
-                <label for="id_title"><h5>Choose a title:</h5></label>
-                <p><input id="id_title" type="text" name="title" maxlength="100" required /></p>
-                </fieldset>
-                <fieldset>
-                <div class="form-group">
-                    <label for="id_docfile"><h5>Choose a file</h5></label>
-                    <input id="docfile" type="file" name="docfile" class="form-control-file" aria-describedby="fileHelp">
-                    <small id="fileHelp" class="form-text text-muted">Please, read carefully the <a href="{% url 'carousel:manual' %}">'Upload manual'</a>.</small>
                 </div>
+                <!-- DELETE collumn -->
+                <div class="col">
+                    
+                    <!-- List Items to delete-->   
+                    <form action="{% url 'carousel:delete'%}" method="post">
+                        <fieldset>
+                            {% csrf_token %}
+                            {% for document in documents %}
 
-                <button type="submit" class="btn btn-primary">Upload</button>
-            </fieldset>
-
-        </form>
+                            <input type="checkbox" id="document{{ forloop.counter }}" name="delete_list" value="{{ document.id }}"/>
+                            <label for="document{{ forloop.counter }}">
+                            <a><h5>{{ document.title }}</h5></a>
+                            </label><br>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </fieldset>
+                    </form>
+                    
+                </div>
+            </div>
     </div>
-    <div class="col-sm-4">
-        
-        <!-- List Items to delete-->   
-        <form action="{% url 'carousel:delete'%}" method="post">
-            <fieldset>
-                {% csrf_token %}
-                {% for document in documents %}
-
-                <input type="checkbox" id="document{{ forloop.counter }}" name="delete_list" value="{{ document.id }}"/>
-                <label for="document{{ forloop.counter }}">
-                <a><h5>{{ document.title }}</h5></a>
-                </label><br>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary">Delete</button>
-            </fieldset>
-        </form>
-    </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-3"></div>
+</div>
 
 
 {% endblock %}

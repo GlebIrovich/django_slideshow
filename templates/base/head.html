@@ -1,0 +1,21 @@
+{% load static %}
+<head>
+
+    {% block title %}<title>UZH-Slideshow</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add additional CSS in static file -->
+
+    <link rel="stylesheet" href= {% static '/bootstrap/css/bootstrap_full.css' %}>
+    <link rel="stylesheet" href= {% static '/bootstrap/css/bootstrap.css' %}>
+
+
+    <link rel="stylesheet" href= {% static 'lightbox.css' %}>
+    <link rel="stylesheet" href= {% static 'comments.css' %}>
+
+    <script type="text/javascript" src= {% static '/bootstrap/js/jquery-3.2.1.js' %}></script>
+    <script type="text/javascript" src= {% static 'bootstrap/js/bootstrap.min.js' %}></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+
+</head>

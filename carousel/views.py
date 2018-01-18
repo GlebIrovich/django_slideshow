@@ -123,6 +123,7 @@ def list_classes(request):
     )
   
 class ListLectures(View):
+    error = ''
     
     # define dict generating function
     def list_lectures(self, request, class_id, key = None):
@@ -148,22 +149,33 @@ class ListLectures(View):
                 subchapters = list(dic['lectures'][key]['subchapters'].keys())
                 titles = []
                 for sub in subchapters:
+                    # Check if there is a link
+                    try:
+                        link = dic['lectures'][key]['subchapters'][sub]['link']
+                    except KeyError:
+                        link = ''
+
                     # list tuples (title , slide)
                     titles.append(
                         (
                         dic['lectures'][key]['subchapters'][sub]['title'],
-                        int(dic['lectures'][key]['subchapters'][sub]['slide'])-1 # -1 to get position of the slide with Title
+                        int(dic['lectures'][key]['subchapters'][sub]['slide'])-1, # -1 to get position of the slide with Title
+                        link
                         )
                     )
                 self.subchapters = titles
             else:
                 self.subchapters = ''
+            # Get logo
+            try:
+                self.logo = dic['logo']
+            except KeyError:
+                self.logo = ''
 
             # generate slides
             self.key = key
             self.slides = list(dic['lectures'][key]['slides'].values())
             self.length = range(0, len(self.slides))
-            self.error = ''
         # return empty variables if there was no dictionary
         else:
             self.lectures = ''
@@ -183,7 +195,7 @@ class ListLectures(View):
             self.list_lectures(request, kwargs['class_id'])
             self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by( 'slide', '-created')
         return render(
-            request, 'lectures.html', 
+            request, 'lectures/lectures.html', 
             {'lectures':self.lectures,
             'document': self.document,
             'subchapters':self.subchapters,
@@ -191,43 +203,44 @@ class ListLectures(View):
             'key': self.key,
             'length': self.length,
             'error': self.error,
-            'comments': self.comments}
+            'comments': self.comments,
+            'logo': self.logo}
         )
 
-def create_post(request, **kwargs):
+# def create_post(request, **kwargs):
 
-    if request.method == 'POST':
-        post_text = request.POST.get('the_post_text', '')
-        post_author = request.POST.get('the_post_author', '')
-        class_id = request.POST.get('class_id', '')
-        slide = request.POST.get('slide', '')
-        if request.POST.get('key', ''):
-            lecture = request.POST.get('key', '')
-        else:
-            lecture = 'lecture1'
-        response_data = {}
+#     if request.method == 'POST':
+#         post_text = request.POST.get('the_post_text', '')
+#         post_author = request.POST.get('the_post_author', '')
+#         class_id = request.POST.get('class_id', '')
+#         slide = request.POST.get('slide', '')
+#         if request.POST.get('key', ''):
+#             lecture = request.POST.get('key', '')
+#         else:
+#             lecture = 'lecture1'
+#         response_data = {}
 
-        post = PostComment(author = post_author, 
-                                slide = slide,
-                                text = post_text,
-                                class_id_id = Presentation.objects.get(pk = class_id).id,
-                                lecture = lecture 
-                                )
-        post.save()
+#         post = PostComment(author = post_author, 
+#                                 slide = slide,
+#                                 text = post_text,
+#                                 class_id_id = Presentation.objects.get(pk = class_id).id,
+#                                 lecture = lecture 
+#                                 )
+#         post.save()
 
-        response_data['result'] = 'Create post successful!'
-        response_data['postpk'] = post.pk
-        response_data['text'] = post.text
-        response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
-        response_data['author'] = post.author
-        response_data['slide'] = post.slide
+#         response_data['result'] = 'Create post successful!'
+#         response_data['postpk'] = post.pk
+#         response_data['text'] = post.text
+#         response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
+#         response_data['author'] = post.author
+#         response_data['slide'] = post.slide
 
         
         
-        return JsonResponse(response_data)
-    else:
-       return JsonResponse(
-           ({"nothing to see": "this isn't happening"}))
+#         return JsonResponse(response_data)
+#     else:
+#        return JsonResponse(
+#            ({"nothing to see": "this isn't happening"}))
 
 
 def delete_post(request, **kwargs):
@@ -275,7 +288,41 @@ def lazy_load(request):
                                 )
     # package output data and return it as a JSON object
     output_data = {
-                    'comments_html': comments_html,
+                    'lectures/comments_html': comments_html,
                     'has_next': comments.has_next()
     }
     return JsonResponse(output_data)
+
+def create_post(request):
+    if request.method == 'POST':
+        post_text = request.POST.get('the_post_text', '')
+        post_author = request.POST.get('the_post_author', '')
+        class_id = request.POST.get('class_id', '')
+        slide = request.POST.get('slide', '')
+        if request.POST.get('key', ''):
+            lecture = request.POST.get('key', '')
+        else:
+            lecture = 'lecture1'
+        response_data = {}
+
+        post = PostComment(author = post_author, 
+                                slide = slide,
+                                text = post_text,
+                                class_id_id = Presentation.objects.get(pk = class_id).id,
+                                lecture = lecture 
+                                )
+        post.save()
+        # convert to list ot iterate over
+        post = [post]
+        # build a html posts list with the paginated posts
+        comments_html = loader.render_to_string(
+                                    'lectures/comments.html',
+                                    {'comments': post,
+                                    # send user to know if he is auth
+                                    'user':request.user}
+                                    )
+        # package output data and return it as a JSON object
+        output_data = {
+                        'comments_html': comments_html
+        }
+        return JsonResponse(output_data)

@@ -1,0 +1,30 @@
+<div style="padding-top:15px;">
+{% if lectures %}
+<ul>
+{% for key_curent, title in lectures %}
+<a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a>  
+    {% if subchapters %}
+
+        {% if key_curent == key %}
+            <ul type="a" class='controls'>
+            {% for title, position, link in subchapters %}
+    
+                    <h4 style="padding-right:25px">
+                        <span><a href="#carousel" data-slide-to = "{{ position }}">{{ title }}</a>
+                            {% if link %} (<a href="{{ link }}">link</a>) {% endif %}
+                        </span>
+                    </h4>
+                
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
+{% endfor %}
+</ul>
+
+{% else %}
+    <p>No lectures uploaded.</p>
+{% endif %}
+</div>
+
