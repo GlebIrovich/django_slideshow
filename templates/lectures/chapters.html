@@ -1,4 +1,4 @@
-<div style="padding-top:15px;">
+<div style="padding-top:15px;padding-right:10px;">
 {% if lectures %}
 <ul>
 {% for key_curent, title in lectures %}
@@ -9,7 +9,7 @@
             <ul type="a" class='controls'>
             {% for title, position, link in subchapters %}
     
-                    <h4 style="padding-right:25px">
+                    <h4 style="padding-right:25px;">
                         <span><a href="#carousel" data-slide-to = "{{ position }}">{{ title }}</a>
                             {% if link %} (<a href="{{ link }}">link</a>) {% endif %}
                         </span>
