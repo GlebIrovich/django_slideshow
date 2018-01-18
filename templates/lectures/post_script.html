@@ -137,6 +137,8 @@
             // handle a successful response
             success: function(data) {
                 console.log('Success');
+                $('#post-text').val(''); // remove the value from the input
+                $('#post-author').val('');
                 
                 // append html to the posts div
                 
