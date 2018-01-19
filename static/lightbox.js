@@ -1,4 +1,21 @@
 
+
+
+var facebook ={
+    url : window.location.href,
+    metaUrl : function() {
+        $("#meta-url-fb").attr("content", this.url);
+    },
+    activeImgUrl: function(){ return $('#carousel-b .active').find('img')[0].src },
+    metaImg : function() {
+        $("#meta-img-fb").attr("content", this.activeImgUrl)
+    }
+}
+// update link on load For facebook
+window.onload = facebook.metaUrl();
+window.onload = facebook.metaImg();
+
+
 //var carousel = document.getElementById('carousel-b');
 var lightbox = document.querySelector('.lightbox');
 
@@ -9,16 +26,7 @@ $('#carousel-b').on('dblclick', function(){
     lightbox.style.display = 'block';
     
 })
-
-//var area = document.querySelector('.lightbox');
-
-$('.lightbox').on('click', function(e) {
-    // check if we click around picture
-    if (e.target.className === 'lightbox'){
-        lightbox.style.display = 'none';
-    }
-})
-
+// close lightbox with ESC
 $(document).keydown(function(e) {
     if( e.keyCode === 27 ) {
         lightbox.style.display = 'none';
@@ -29,14 +37,18 @@ $('.closex').click(function(e) {
     lightbox.style.display = 'none';
 })
     
-
 // Sync slider
 $('#carousel-b').on('click','a',function(e){
-    lazyLoad.displayOnly(nextPrev(e, 'b'))
-    lazyLoad.linkAction(nextPrev(e, 'b'))
-    var other = 'a';
-    $('#carousel-' + other).carousel(this.getAttribute('data-slide'));
-})
+        lazyLoad.displayOnly(nextPrev(e, 'b'))
+        lazyLoad.linkAction(nextPrev(e, 'b'))
+        var other = 'a';
+        $('#carousel-' + other).carousel(this.getAttribute('data-slide'));
+    });
+// update facebook meta
+// facebook.metaImg();
+
+
+
 
 
 $('#carousel-a').on('click','a',function(e){
@@ -44,6 +56,8 @@ $('#carousel-a').on('click','a',function(e){
     lazyLoad.linkAction(nextPrev(e, 'a'))
     var other = 'b';
     $('#carousel-' + other).carousel(this.getAttribute('data-slide'));
+    // // update facebook meta
+    // facebook.metaImg();
 })
 
 
@@ -64,6 +78,9 @@ $('.controls').on('click','a',function(e){
 
     $('#carousel-a').carousel(link);
     $('#carousel-b').carousel(link);
+
+    // update facebook meta
+    facebook.metaImg();
 });
 // add color to A after load
 

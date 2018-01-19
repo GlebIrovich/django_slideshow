@@ -1,9 +1,14 @@
 {% load static %}
-<head>
 
-    {% block title %}<title>UZH-Slideshow</title>{% endblock %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- include fb meta -->
+    {% include 'facebook/facebookMETA.html' %}
+
+    <!-- LOAD fb SDK -->
+
+    {% include 'facebook/facebookSDK.html' %}
+
     <!-- Add additional CSS in static file -->
 
     <link rel="stylesheet" href= {% static '/bootstrap/css/bootstrap_full.css' %}>
@@ -18,4 +23,3 @@
 
     <link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
 
-</head>
