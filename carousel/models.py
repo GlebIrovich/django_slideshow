@@ -15,6 +15,7 @@ def user_directory_path(instance, filename):
 class Presentation(models.Model):
     title = models.CharField( max_length=100, default='noname')
     docfile = models.FileField(upload_to=user_directory_path)
+    color = models.CharField( max_length=100, default='')
     json = JSONField()
 
 class PostComment(models.Model):

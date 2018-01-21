@@ -326,3 +326,22 @@ def create_post(request):
                         'comments_html': comments_html
         }
         return JsonResponse(output_data)
+
+def change_color(request):
+    if request.method == 'POST':
+        class_id = request.POST.get('class_id', '')
+        color = request.POST.get('color', '')
+
+        post = Presentation.objects.get(pk = class_id)
+        post.color = color
+        post.save()
+
+        # build a html posts list with the paginated posts
+        response = 'Color successfuly changed'
+        # package output data and return it as a JSON object
+        output_data = {
+                        'response': response
+        }
+        return JsonResponse(output_data)
+
+    

@@ -81,7 +81,7 @@
 }
 
 .blue {
-  background-color: #041199 !important;
+  /* background-color: #041199 !important; */
   padding-top: 40px;
   padding-bottom: 35px;
   color: white !important;
@@ -104,3 +104,9 @@ a:hover {
   font-size: 10pt !important;
   font-weight: lighter;
 }
+
+/* Color palette */
+.full-spectrum .sp-palette {
+  max-width: 200px;
+  }
+  

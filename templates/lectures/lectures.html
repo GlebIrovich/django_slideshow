@@ -15,7 +15,11 @@
 {% if error %} <h1>{{ error }} </h1> {% endif %}
 
 <!-- ROW FOR CHAPTERS AND CAROUSEL -->
-<div class="row blue">
+{% if document.color %}
+<div class="row blue" style="background-color: {{ document.color }} !important;">
+{% else %}
+<div class="row blue" style="background-color: #041199 !important;">
+{% endif %}
     <!-- LEFT COLUMN -->
     <div class="col-md-3">
         <div class="row">
@@ -39,6 +43,12 @@
             <!-- MAIN carouesl -->
             {% include 'lectures/main_carousel.html' %}
         </div>
+        <!-- color picker -->
+        {% if user.is_authenticated %}
+        <div class="text-center" style="padding-top:10px;" id="color-picker">
+            <input type='text' id="full"/>
+        </div>
+        {% endif %}
     </div>
     <!-- RIGHT COLUMN -->
     <div class="col-md-3"></div>
@@ -89,4 +99,5 @@
 
 {% block java_script %}
 {% include 'lectures/post_script.html' %}
+{% include 'lectures/change_color.html' %}
 {% endblock %}

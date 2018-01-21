@@ -42,8 +42,10 @@ def generate_json(path, class_name):
     
     # get logo must be 200x200 and called logo
     logo = [x for x in os.listdir(path) if x.lower().endswith(allowed_formats)]
-    if logo[0]:
+    try:
         dic['logo'] = '/media/' + initial_path + '/' + logo[0]
+    except IndexError:
+        pass
         
     # change this line to the actual class name
     dic['class_title'] = class_name
@@ -58,8 +60,8 @@ def generate_json(path, class_name):
             i+=1
             
             subpath_to_csv = path + '/' + folder + '/' + 'details.csv'
-            
             data = pd.read_csv(subpath_to_csv, header = None)
+
             
             dic['lectures']['lecture{}'.format(i)]={'lecture_title':data.iloc[0][1]}
             if len(data) > 1:

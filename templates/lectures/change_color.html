@@ -1,0 +1,34 @@
+<script>
+    $('.sp-choose').click(function() {
+        console.log('color change pressed');
+        var color = $('.sp-preview-inner').css('background-color');
+        var url_to = '/ajax/change_color/';
+
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    class_id: "{{document.id}}",
+                    color: color}, // data sent with the post request
+            // handle a successful response
+            success: function(data) {
+                console.log('Success');
+                console.log(data.response);
+                
+                
+                // Change color
+                
+                $('.blue').attr('style', 'background-color:' + color + ' !important;');
+            },
+            error: function(xhr, status, error) {
+                // shit happens 
+                console.log('Error');
+            }
+                
+        });
+    });
+
+
+
+
+</script>
