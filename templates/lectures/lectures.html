@@ -26,12 +26,17 @@
 <!-- Error block -->
 {% if error %} <h1>{{ error }} </h1> {% endif %}
 
-<!-- ROW FOR CHAPTERS AND CAROUSEL -->
-{% if document.color %}
-<div class="row blue" style="background-color: {{ document.color }} !important;">
+<!-- login logo if not loged in -->
+{% if user.is_authenticated %}
 {% else %}
-<div class="row blue" style="background-color: #041199 !important;">
+<div class="row blue pull-right" style="background-color: {{ document.color }} !important; padding-top: 0px; padding-bottom: 0px;">
+    <a href="{% url 'login'%}?next={{request.path}}"><img src="{% static 'login.png' %}" height="30"></a>
+</div>
 {% endif %}
+<!-- ROW FOR CHAPTERS AND CAROUSEL -->
+
+<div class="row blue" style="background-color: {{ document.color }} !important;">
+
     <!-- LEFT COLUMN -->
     <div class="col-md-3">
         <div class="row">
