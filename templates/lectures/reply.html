@@ -1,0 +1,119 @@
+<script>
+
+
+    let main, parent;
+
+    // Show reply form
+    $('#comments').on('click','#reply-comment', function(event){
+        event.preventDefault();
+        console.log("reply pressed!");  // sanity check        
+        let com = new CommentReply();
+        com.hideForms($("div[id^='comment-form-reply']"));
+        com.parentObj = $('#' + com.getParentId($(this)));
+        com.showReplyForm(com.parentObj);
+        main = com.getMain($(this));
+        parent = com.getParentId($(this))
+    });
+
+    
+    $('#comments').on('click','#reply-btn', function(event){
+        event.preventDefault();
+        let com = new CommentReply();
+        com.form = $('#comment-form-reply');
+        com.parentObj = com.form.parent();
+        console.log(com.parentObj);
+                
+        com.reply(com.form, com.parentObj);
+    })
+
+    // Cancel 
+    $('#comments').on('click','#reply-cancel', function(event){
+        event.preventDefault();
+        let com = new CommentReply();
+        com.hideForms($("div[id^='comment-form-reply']"));
+
+    })
+
+    let CommentReply = function(){
+        this.hideForms = function(obj){
+            if(obj.length){
+                for (let i = 0; i < obj.length; i++) {
+                    obj[i].remove();  
+                }
+            }
+        },
+        this.reply = function(form, parentObj) {
+            console.log("reply is working!") // sanity check
+
+            var url_to = '/ajax/reply/';
+            var activeSlide = getActiveSlide();
+            $.ajax({
+                url : url_to, // the endpoint
+                type : "POST", // http method
+                data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                        the_post_author : form.find('#post-author').val(), 
+                        the_post_text : form.find('#post-text').val(),
+                        class_id: "{{document.id}}",
+                        key: "{{ key }}",
+                        slide: activeSlide,
+                        main: main, 
+                        parent: parent}, // data sent with the post request
+                        // level must be in view as parent +1 
+                // handle a successful response
+                success: function(data) {
+                    console.log('Success');
+                    $('#post-text').val(''); // remove the value from the input
+                    $('#post-author').val('');
+                    
+                    // append html to the posts div
+                    form.remove();
+                    $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove()
+                    //$("div.container#"+id).remove();
+                
+                    $('#comments').append(data.comments_html);
+                    console.log("success"); // another sanity check
+                    
+                },
+                error: function(xhr, status, error) {
+                    // shit happens 
+                    console.log('Error');
+                }
+                    
+            });
+        };
+        this.getMain = function(obj){return $(obj).data('main')},
+        this.getParentId = function(obj){return $(obj).data('parent')}
+        this.showReplyForm = function(obj) {
+            console.log("show reply form is working!") // sanity check
+
+            var url_to = '/ajax/show_reply_form/';
+            $.ajax({
+                url : url_to, // the endpoint
+                type : "POST", // http method
+                data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                        }, // data sent with the post request
+                // handle a successful response
+                success: function(data) {
+                    console.log('Success');
+                    
+                    // append html to the posts div
+                    
+                    obj.append(data.html);
+                },
+                error: function(xhr, status, error) {
+                    // shit happens 
+                    console.log('Error');
+                }
+                    
+            });
+        
+        };
+
+    }
+
+    function getActiveSlide(){
+        var activeSlide = $('#carousel-b .active').index('#carousel-b .item')
+        return activeSlide
+    };
+
+</script>

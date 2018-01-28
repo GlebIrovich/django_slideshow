@@ -121,7 +121,8 @@ def list_classes(request):
         request, 'classes.html',
         {'documents':documents}
     )
-  
+
+
 class ListLectures(View):
     error = ''
     
@@ -190,10 +191,10 @@ class ListLectures(View):
         # get required parameters to list leectures
         try:
             self.list_lectures(request, kwargs['class_id'], kwargs['key'])
-            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture=kwargs['key']).order_by('slide', '-created') 
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture=kwargs['key']).order_by('slide', 'main', 'created','level') 
         except KeyError:
             self.list_lectures(request, kwargs['class_id'])
-            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by( 'slide', '-created')
+            self.comments = PostComment.objects.filter(class_id_id=kwargs['class_id'], lecture = 'lecture1').order_by( 'slide', 'main', 'created','level') 
         return render(
             request, 'lectures/lectures.html', 
             {'lectures':self.lectures,
@@ -207,42 +208,6 @@ class ListLectures(View):
             'logo': self.logo}
         )
 
-# def create_post(request, **kwargs):
-
-#     if request.method == 'POST':
-#         post_text = request.POST.get('the_post_text', '')
-#         post_author = request.POST.get('the_post_author', '')
-#         class_id = request.POST.get('class_id', '')
-#         slide = request.POST.get('slide', '')
-#         if request.POST.get('key', ''):
-#             lecture = request.POST.get('key', '')
-#         else:
-#             lecture = 'lecture1'
-#         response_data = {}
-
-#         post = PostComment(author = post_author, 
-#                                 slide = slide,
-#                                 text = post_text,
-#                                 class_id_id = Presentation.objects.get(pk = class_id).id,
-#                                 lecture = lecture 
-#                                 )
-#         post.save()
-
-#         response_data['result'] = 'Create post successful!'
-#         response_data['postpk'] = post.pk
-#         response_data['text'] = post.text
-#         response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
-#         response_data['author'] = post.author
-#         response_data['slide'] = post.slide
-
-        
-        
-#         return JsonResponse(response_data)
-#     else:
-#        return JsonResponse(
-#            ({"nothing to see": "this isn't happening"}))
-
-
 def delete_post(request, **kwargs):
 
     if request.method == 'POST':
@@ -250,11 +215,30 @@ def delete_post(request, **kwargs):
         response_data = {}
 
         post = PostComment.objects.get(pk = comment_id )
+        # get data to render comments
+        lecture = post.lecture
+        class_id = post.class_id_id
+        slide = post.slide
+
+        # delete
         post.delete()
 
-        response_data['result'] = 'Comment successfuly deleted!'
+        result = 'Comment successfuly deleted!'
+        #lecture=lecture, slide = slide
+        comments = PostComment.objects.filter(class_id_id=class_id, lecture=lecture, slide = slide).order_by('main', 'created','level') 
+        comments_html = loader.render_to_string(
+                                    'lectures/comments.html',
+                                    {'comments': comments,
+                                    # send user to know if he is auth
+                                    'user':request.user}
+                                   )
+        # package output data and return it as a JSON object
+        output_data = {
+                        'comments_html': comments_html,
+                        'result':result
+        }
         
-        return JsonResponse(response_data)
+        return JsonResponse(output_data)
     else:
        return JsonResponse(
            ({"nothing to see": "this isn't happening"}))
@@ -299,6 +283,7 @@ def create_post(request):
         post_author = request.POST.get('the_post_author', '')
         class_id = request.POST.get('class_id', '')
         slide = request.POST.get('slide', '')
+        user_tag = request.POST.get('user_tag', '')
         if request.POST.get('key', ''):
             lecture = request.POST.get('key', '')
         else:
@@ -308,22 +293,30 @@ def create_post(request):
         post = PostComment(author = post_author, 
                                 slide = slide,
                                 text = post_text,
+                                user_tag = user_tag,
                                 class_id_id = Presentation.objects.get(pk = class_id).id,
-                                lecture = lecture 
+                                lecture = lecture
                                 )
         post.save()
-        # convert to list ot iterate over
-        post = [post]
+        # set main to self id
+        main = post.id
+        post.main_id = main
+        post.save()
+        
+        # get commets list
+        comments = PostComment.objects.filter(class_id_id=post.class_id_id, lecture=lecture, slide = slide).order_by('main', 'created','level') 
+        result = "Comment successfuly added"
         # build a html posts list with the paginated posts
         comments_html = loader.render_to_string(
                                     'lectures/comments.html',
-                                    {'comments': post,
+                                    {'comments': comments,
                                     # send user to know if he is auth
                                     'user':request.user}
                                     )
         # package output data and return it as a JSON object
         output_data = {
-                        'comments_html': comments_html
+                        'comments_html': comments_html,
+                        'result':result
         }
         return JsonResponse(output_data)
 
@@ -344,4 +337,112 @@ def change_color(request):
         }
         return JsonResponse(output_data)
 
-    
+def reply(request):
+    if request.method == 'POST':
+        post_text = request.POST.get('the_post_text', '')
+        post_author = request.POST.get('the_post_author', '')
+        class_id = request.POST.get('class_id', '')
+        slide = request.POST.get('slide', '')
+        main = request.POST.get('main', '')
+        parent = request.POST.get('parent', '')
+        user_tag = request.POST.get('user_tag', '')
+        
+        
+        # level is parent level + 1
+        level = 1
+
+        if request.POST.get('key', ''):
+            lecture = request.POST.get('key', '')
+        else:
+            lecture = 'lecture1'
+        response_data = {}
+
+        post = PostComment(author = post_author, 
+                                slide = slide,
+                                text = post_text,
+                                class_id_id = Presentation.objects.get(pk = class_id).id,
+                                lecture = lecture,
+                                main_id = PostComment.objects.get(pk=main).id,
+                                parent_id = PostComment.objects.get(pk=parent).id,
+                                level = level,
+                                replied_to = PostComment.objects.get(pk=parent).author,
+                                user_tag = user_tag
+                                )
+        post.save()
+        # get refreshed list of commetns for this page
+        comments = PostComment.objects.filter(class_id_id=post.class_id_id, lecture=lecture, slide = slide).order_by('main', 'created','level') 
+        result = "Reply successfuly added"
+        # build a html posts list with the paginated posts
+        comments_html = loader.render_to_string(
+                                    'lectures/comments.html',
+                                    {'comments': comments,
+                                    # send user to know if he is auth
+                                    'user':request.user}
+                                   )
+        # package output data and return it as a JSON object
+        output_data = {
+                        'comments_html': comments_html,
+                        'result':result
+        }
+        return JsonResponse(output_data)
+
+def show_reply_form(request):
+    if request.method == 'POST':
+        html = loader.render_to_string(
+                                    'lectures/comments_form_reply.html'
+                                    )
+        # package output data and return it as a JSON object
+        output_data = {
+                        'html': html
+        }
+        return JsonResponse(output_data)
+
+def admin_tag(request):
+    if request.method == 'POST':
+        class_id = request.POST.get('class_id', '')
+        slide = request.POST.get('slide', '')
+        comment_id = request.POST.get('id', '')
+        tag = request.POST.get('tag', '')
+
+        if request.POST.get('key', ''):
+            lecture = request.POST.get('key', '')
+        else:
+            lecture = 'lecture1'
+        
+        response_data = {}
+
+        post = PostComment.objects.get(pk=comment_id)
+        post.admin_tag = tag
+        post.save()
+        # get refreshed list of commetns for this page
+        comments = PostComment.objects.filter(class_id_id=post.class_id_id, lecture=lecture, slide = slide).order_by('main', 'created','level') 
+        result = "Reply successfuly added"
+        # build a html posts list with the paginated posts
+        comments_html = loader.render_to_string(
+                                    'lectures/comments.html',
+                                    {'comments': comments,
+                                    # send user to know if he is auth
+                                    'user':request.user}
+                                   )
+        # package output data and return it as a JSON object
+        output_data = {
+                        'comments_html': comments_html
+        }
+        return JsonResponse(output_data)
+
+
+def toggle_comments(request):
+    if request.method == 'POST':
+        class_id = request.POST.get('class_id', '')
+        display = request.POST.get('display', '')
+
+        document = Presentation.objects.get(pk=class_id)
+        document.comments_display = display
+        document.save()
+        # get refreshed list of commetns for this page
+        result = "Reply successfuly added"
+        # package output data and return it as a JSON object
+        output_data = {
+                        'result':result
+        }
+        return JsonResponse(output_data)

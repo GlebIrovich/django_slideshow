@@ -1,0 +1,34 @@
+
+
+<div id="comment-form-reply" class="container" style="margin-bottom:15px; margin-top:15px;display: none;">
+    
+    <form id="reply-form" method="post" data-csrf="{{ csrf_token }}">
+            {% csrf_token %}
+        <fieldset>
+            <div class="form-group">
+            <!--<p style="font-size:12pt;" >Author</p>-->
+            <input type="author" class="form-control" id="post-author" aria-describedby="emailHelp" placeholder="Name" style="font-size:14px" required>
+
+            </div>
+
+            <div class="form-group">
+            <!--<p style="font-size:12pt;">You comment</p>-->
+            <textarea class="form-control" id="post-text" rows="3" placeholder="Comment" data-gramm="true" data-txt_gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" data-gramm_id="1604aed8-89c1-f7d1-565f-a6b577d22530" spellcheck="false" data-gramm_editor="true" style="z-index: auto; position: relative; line-height: 22.5px; font-size: 13px; transition: none; background: white" required></textarea>
+            </div>
+
+                    <!-- select tag -->
+            <div class="form-group">
+                <select class="form-control" id="selectUserTagReply" style="margin-bottom:10px;" required>
+                    <option value="" disabled selected>select tag</option>
+                    <option>general feedback</option>
+                    <option>improvement</option>
+                    <option>mistake</option>
+                </select>
+            </div>
+            <button id="reply-btn" type="submit" class="btn btn-secondary pull-left" style="color: white;background-color: #BFBFBF;">Add comment</button>
+            <button id="reply-cancel" type="submit" class="btn btn-secondary pull-left" style="color: white;background-color: #BFBFBF; margin-left: 10px;">Cancel</button>
+            <!-- <input type="submit" value="Post" class="tiny button pull-right" style="color:black"> -->
+        </fieldset>
+    </form>
+</div>
+

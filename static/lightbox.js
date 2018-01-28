@@ -93,12 +93,12 @@ $(document).ready(function() {
 
 // move carousel from comments link
 
-$('#comments').on('click','a',function(e){
-    var link = this.getAttribute('data-slide-to');
-    console.log(this.getAttribute('data-slide-to'));
-    $('#carousel-a').carousel(parseInt(link));
-    $('#carousel-b').carousel(parseInt(link));
-});
+// $('#comments').on('click','a',function(e){
+//     var link = this.getAttribute('data-slide-to');
+//     console.log(this.getAttribute('data-slide-to'));
+//     $('#carousel-a').carousel(parseInt(link));
+//     $('#carousel-b').carousel(parseInt(link));
+// });
 
 function activeSlide(){
     var activeSlide = $('#carousel-b .active').index();
@@ -160,13 +160,13 @@ var lazyLoad ={
         this.currentNumber += this.step;
     },
     totalNumberOfComments: function(){
-        return $( "#comments" ).find( "*.container" ).length;
+        return $( ".comment").length;
     },
     totalNumberOfCommentsX: function(slide){
-        return $(".container[data-slide='" + slide + "']").length;
+        return $(".container[data-slide='" + slide + "']").filter(function(){return $(this).data('level') === 0 }).length;
     },
     displayOnly: function(slide) {
-        var $allContainers = $( "#comments" ).find( "*.container" );
+        var $allContainers = $( ".comment")
         var display = [];
         for (i = 0; i < $allContainers.length; i++){
             $allContainers[i].style.display = 'none';
@@ -177,9 +177,15 @@ var lazyLoad ={
         };
         // display only withing range
         // check if the list long enough
-        var number = (display.length <  this.currentNumber) ? display.length : this.currentNumber;
+        var onlyMain = display.filter(function(el){return el.getAttribute('data-level') == 0 });        
+        var number = (onlyMain.length <  this.currentNumber) ? onlyMain.length : this.currentNumber;
+
+        //
         for (i = 0; i < number; i++){
-            display[i].style.display = 'block';
+            // idea : find main comments. display only two main comments with threads
+            let main_id = onlyMain[i].getAttribute('data-main');            
+            let toShow = display.filter(function(el){return el.getAttribute('data-main') === main_id} );          
+            toShow.forEach(function(el){el.style.display = 'block'});
         
         };
     }
@@ -191,35 +197,6 @@ $('#lazyLoadLink').on('click', function(){
     lazyLoad.displayOnly(activeSlide());
     lazyLoad.linkAction(activeSlide());
 });
-
-// Normalize bootstrap carousel hight
-// function carouselNormalization() {
-//     var items = $('#carousel-b .item'), //grab all slides
-//         heights = [], //create empty array to store height values
-//         tallest; //create variable to make note of the tallest slide
-    
-//     if (items.length) {
-//         function normalizeHeights() {
-//             items.each(function() { //add heights to array
-//                 heights.push($(this).height()); 
-//             });
-//             tallest = Math.max.apply(null, heights); //cache largest value
-//             items.each(function() {
-//                 $(this).css('min-height',tallest + 'px');
-//             });
-//         };
-//         normalizeHeights();
-    
-//         $(window).on('resize orientationchange', function () {
-//             tallest = 0, heights.length = 0; //reset vars
-//             items.each(function() {
-//                 $(this).css('min-height','0'); //reset min-height
-//             }); 
-//             normalizeHeights(); //run it again 
-//         });
-//     }
-//     }
-//     $(document).ready(carouselNormalization);
 
 // double tap
 (function($){
@@ -300,4 +277,16 @@ $('#lazyLoadLink').on('click', function(){
             "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
             "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
         ]
+    });
+
+//// slide to right reply
+
+//$('body,html').animate({scrollTop:$('div#comment-form').offset().top},500)
+$('#comments').on('click','#replied-to',function(e){
+    e.preventDefault();
+    let id = $(this).data('replied-to')
+    $('body,html').animate({scrollTop:$('.comment#'+id).offset().top},{
+        queue: true,
+        duration: 300
+      })
     });

@@ -1,22 +1,40 @@
 
+{% load padding %}
+{% load user_tag %}
+{% load admin_tag %}
+
 {% if comments %}
 {% for comment in comments %}
+{% padding comment.level 10 as pad %}
+{% user_tag comment.user_tag as userTag %}
 
-    <div class="container" id={{comment.id}} data-slide ="{{ comment.slide }}" style="color:black !important;">
+
+
+    <div class="container comment" id={{comment.id}} data-main="{{comment.main_id}}" data-parent-comment="{{comment.parent_id}}" data-level="{{comment.level}}" data-slide ="{{ comment.slide }}" style="margin-bottom: 7px;color:black !important; {{ pad }}" >
         <div class="panel-white post panel-shadow">
+            
             {% if user.is_authenticated %}
+            <!-- close button -->
             <div class="pull-right m-3">
                 
                     <input id='delete' type="hidden" />
                     <button type="button" class="close delete-post" id={{comment.id}}>&times;</button>
-
             </div>
             {% endif %}
+            
+
             <div class="post-heading" id="comment-heading">
                 <div class="pull-left meta">
                     <div class="title h5">
                         <h6 class="text-muted time"  style="font-size: 10pt;">
-                        <b>{{ comment.author }}</b> made a comment on slide <a href="#carousel" data-slide-to = "{{ comment.slide }}">#{{ comment.slide|add:1 }}.</a>
+
+                        {% if comment.replied_to %}
+                        <b style="color:black">{{ comment.author }}</b> replied to <a id="replied-to" data-replied-to="{{comment.parent_id}}" href="#">{{ comment.replied_to }}</a>
+                        {% else %}
+                        <b style="color:black">{{ comment.author }}</b> made a comment on slide <b style="color:black">#{{ comment.slide|add:1 }}.</b>
+                        {% endif %}
+
+
                         &nbsp;&nbsp;{{ comment.created }}
                         </h6>
                     </div>
@@ -25,6 +43,35 @@
             </div> 
             <div class="post-description"> 
                 <p>{{ comment.text }}</p>
+                <!-- reply -->
+                <div>
+                    <button id="reply-comment" data-main="{{comment.main_id}}" data-parent="{{comment.id}}" type="submit" class="btn btn-secondary pull-right" style="border-color: white !important;border-radius:10px;">reply</button>
+                </div>
+                <!-- tags -->
+                <div class="pull-right" style="padding-right:10px; padding-top:2px;"> 
+                    {% if comment.admin_tag %}
+                    {% admin_tag comment.admin_tag as adminTag %}
+                    <span id="adminTag" class="badge badge-pill {{adminTag}}">{{ comment.admin_tag }}</span>
+                    {% endif %}
+                    <span id="userTag" data-id="{{comment.id}}" class="badge badge-pill {{userTag}}">{{ comment.user_tag }}</span>
+                </div>
+                
+                <!-- admin tag selector --> 
+                <div class="form-group pull-right" style="padding-right:5px;margin:0;">
+                    {% if user.is_authenticated %}
+                    <select id="selectAdminTag{{comment.id}}" class="custom-select" style="padding-bottom:0px !important;display: none;">
+                        <option selected>none</option>
+                        <option>under consideration</option>
+                        <option>implemented</option>
+                        <option>declined</option>
+                    </select>
+                    {% endif %} 
+                </div>
+                <!-- confirm tag -->
+                {% if user.is_authenticated %}
+                <button id="setAdminTag{{comment.id}}" data-id="{{comment.id}}" type="submit" class="btn btn-secondary pull-right admin-selector" style="border-color: white !important;border-radius:10px;margin-right:5px;display:none;">ok</button>
+                {% endif %}
+                
             </div>
         </div>
     </div>

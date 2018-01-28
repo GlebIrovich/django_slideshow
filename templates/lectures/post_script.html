@@ -6,60 +6,6 @@
         create_post();
     });
 
-    // AJAX for posting
-    // function create_post() {
-    //     console.log("create post is working!") // sanity check
-
-    //     var url_to = '/ajax/post/';
-    //     console.log(url_to);
-    //     var activeSlide = getActiveSlide();
-    //     $.ajax({
-    //         url : url_to, // the endpoint
-    //         type : "POST", // http method
-    //         data : {csrfmiddlewaretoken: '{{ csrf_token}}',
-    //                 the_post_author : $('#post-author').val(), 
-    //                 the_post_text : $('#post-text').val(),
-    //                 class_id: "{{document.id}}",
-    //                 key: "{{ key }}",
-    //                 slide: activeSlide}, // data sent with the post request
-    //         // handle a successful response
-    //         success : function(json) {
-    //             $('#post-text').val(''); // remove the value from the input
-    //             $('#post-author').val('');
-                
-                
-    //             console.log(json); // log the returned json to the console
-    //             $('#comments').prepend(
-    //                 '<div class="container" id='
-    //                     + json.postpk +
-    //                 ' data-slide ="'
-    //                     + json.slide +
-    //                 '" style="color:black !important;"><div class="panel panel-white post panel-shadow">{% if user.is_authenticated %}<div class="pull-right m-3">' +
-    //                 '<input id="delete" type="hidden" /><button type="button" class="close delete-post" id='
-    //                     + json.postpk +
-    //                 '>&times;</button></div>{% endif %}' +
-    //                 '<div class="post-heading" id="comment-heading"><div class="pull-left meta"><div class="title h5"><b>'
-    //                     + json.author +
-    //                 '</b> made a comment on slide <a href="#carousel" data-slide-to = "'+ json.slide +'">#' 
-    //                     + (parseInt(json.slide) + 1) + // to avoid counting from 0
-    //                 '</a></div><h6 class="text-muted time">'
-    //                     + json.created + 
-    //                 '</h6></div></div><div class="post-description"><p>'
-    //                     + json.text + 
-    //                 '</p></div></div></div>'
-    //             )
-    //             console.log("success"); // another sanity check
-    //         },
-    //         // handle a non-successful response
-    //         error : function(xhr,errmsg,err) {
-    //             $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-    //                 " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-    //             console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-    //         }
-    //     });
-    // };
-
-
     // Delete post on delete
     $('#comments').on('click','.delete-post' , function(event){
         event.preventDefault();
@@ -81,10 +27,12 @@
             data : {csrfmiddlewaretoken: '{{ csrf_token}}',
                     comment_id: id },// data sent with the post request
             // handle a successful response
-            success : function(json) {
+            success : function(data) {
+
+                $('.comment').filter(function(){return $(this).data('slide')== activeSlide()}).remove()
+                //$("div.container#"+id).remove();
                 
-                console.log(json); // log the returned json to the consol
-                $("div.container#"+id).remove();
+                $('#comments').prepend(data.comments_html);
                 console.log("success"); // another sanity check
             },
             // handle a non-successful response
@@ -142,8 +90,9 @@
                 
                 // append html to the posts div
                 
-                $('#comments').prepend(data.comments_html);
-                changeComments(getActiveSlide());
+                $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove();                
+                $('#comments').append(data.comments_html);
+                console.log("success"); // another sanity check
             },
             error: function(xhr, status, error) {
                 // shit happens 

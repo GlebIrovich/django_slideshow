@@ -3,6 +3,18 @@
 
 <!-- Update header title -->
 {% block title %} <title>List of courses</title> {% endblock %}
+{% block head %} 
+
+<link rel="stylesheet" href= {% static 'lightbox.css' %}>
+<link rel="stylesheet" href= {% static 'comments.css' %}>
+<link rel="stylesheet" href= {% static 'spectrum.css' %}>
+<script src= {% static 'spectrum.js' %}></script>
+
+{% endblock %}
+<!-- add elements to navbar -->
+{% block navbar %}
+{% include "lectures/navbar_addon.html" %}
+{% endblock %}
 
 
 {% block lightbox %}
@@ -43,12 +55,6 @@
             <!-- MAIN carouesl -->
             {% include 'lectures/main_carousel.html' %}
         </div>
-        <!-- color picker -->
-        {% if user.is_authenticated %}
-        <div class="text-center" style="padding-top:10px;" id="color-picker">
-            <input type='text' id="full"/>
-        </div>
-        {% endif %}
     </div>
     <!-- RIGHT COLUMN -->
     <div class="col-md-3"></div>
@@ -67,15 +73,16 @@
             <p><mark># contributors</mark></p>
             <p>Markus M. Gleb I.</p>
         </div>
-        <div>
+        <div id="comments1" style="display: {{document.comments_display}} !important;">
             <p><mark># your comments</mark></p>
             <p>Help to further improve this slide. Share your thoughts (corrections, improvements, suggestions, general feedback).</p>
         </div>
-        <div class="row">
+        <div class="row" id="comments2" style="display: {{document.comments_display}} !important;">
              <!-- Comment form -->
             {% include "lectures/comments_form.html" %}
+            {% include "lectures/comments_form_reply.html" %}
         </div>
-        <div>
+        <div id="comments3" style="display: {{document.comments_display}} !important;">
             <!-- COMMENTS -->
             <div>
                 <p><mark># comments history</mark></p>
@@ -87,7 +94,7 @@
         <!-- LOAD MORE -->
         {% if comments %}
         <div align = "center" style="margin-bottom:30px;">
-            <a id="lazyLoadLink" href="javascript:void(0);" data-page="2">Load More Comments</a>
+            <a id="lazyLoadLink" href="javascript:void(0);" data-page="2" style = "display:none;">Load More Comments</a>
         </div>
         {% endif %}
     </div>
@@ -98,6 +105,6 @@
 {% endblock %}
 
 {% block java_script %}
-{% include 'lectures/post_script.html' %}
+{% include 'lectures/comments_script.html' %}
 {% include 'lectures/change_color.html' %}
 {% endblock %}

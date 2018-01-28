@@ -5,8 +5,7 @@
 {% include 'base/head.html' %}
 
 {% block title %}<title>UZH-Slideshow</title>{% endblock %}
-
-
+{% block head %}{% endblock %}
 </head>
 
 
@@ -14,8 +13,44 @@
 {% endblock %}
 
 <body>
-<!-- NAVBAR -->
-{% include 'base/navbar.html' %}
+  <!-- NAVBAR -->
+
+  {% if user.is_authenticated %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom: 0 !important;">
+      <div class="navbar-header" >
+      <a class="navbar-brand" href="#" align="middle"><h3>UZH presetation sharing</h3></a>
+      <button class="navbar-toggler pull-right" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="float: right !important;">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+      </div>
+
+      <div class="collapse navbar-collapse" id="navbarColor01">
+      <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+          <a class="nav-link" href="{% url 'carousel:list_classes' %}"><h3>home</h3> <span class="sr-only">(current)</span></a>
+          </li>
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+          <a class="nav-link" href="{% url 'carousel:upload' %}"><h3>upload</h3></a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link" href="{% url 'carousel:manual' %}"><h3>manual</h3></a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><h3>logout</h3></a>
+          </li>   
+          {% else %}
+          <li class="nav-item">
+          <a class="nav-link my-2 my-sm-0" href="{% url 'login'%}?next={{request.path}}"><h3>login<h3></a>
+          </li>   
+          {% endif %}
+          
+          {% block navbar %}
+          {% endblock %}
+      </ul>
+      </div>
+  </nav>
+  {% endif %} 
 
 
   <div class="container-fluid">
@@ -24,7 +59,6 @@
     {% endblock %}
 
   </div>
-  <script src= {% static 'lightbox.js' %}></script>
   
   {% block java_script %}
   {% endblock %}

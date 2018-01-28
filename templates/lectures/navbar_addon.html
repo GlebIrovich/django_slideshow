@@ -1,0 +1,12 @@
+<!-- add color palette -->
+{% load toggle %}
+{% toggle document.comments_display as toggle_name %}
+<li class="nav-item">
+        <div class="text-center" style="padding-top:10px;" id="color-picker">
+            <input type='text' id="full"/>
+        </div>
+</li> 
+<li class="nav-item">
+    <a class="nav-link" id="toggle-comments" href="#"><h3>{{ toggle_name }}</h3></a>
+</li> 
+

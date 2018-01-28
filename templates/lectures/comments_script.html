@@ -1,0 +1,602 @@
+
+
+<script>
+    ////////////////// get number of active slide ///////////////////
+    var getActiveSlide = function(){
+        var activeSlide = $('#carousel-b .active').index();
+        return activeSlide
+    }; 
+    
+    var facebook ={
+        url : window.location.href,
+        metaUrl : function() {
+            $("#meta-url-fb").attr("content", this.url);
+        },
+        activeImgUrl: function(){ return $('#carousel-b .active').find('img')[0].src },
+        metaImg : function() {
+            $("#meta-img-fb").attr("content", this.activeImgUrl)
+        }
+    }
+    // update link on load For facebook
+    window.onload = facebook.metaUrl();
+    window.onload = facebook.metaImg();
+
+
+    //var carousel = document.getElementById('carousel-b');
+    var lightbox = document.querySelector('.lightbox');
+
+ /////////////////////////////////////////   LIGHTBOX  /////////////////////////////////////////
+    // Display lightbox
+    $('#carousel-b').on('dblclick', function(){
+        console.log('double click');
+
+        lightbox.style.display = 'block';
+        
+    })
+    // close lightbox with ESC
+    $(document).keydown(function(e) {
+        if( e.keyCode === 27 ) {
+            lightbox.style.display = 'none';
+        }
+    });
+    // close pressing cross
+    $('.closex').click(function(e) {
+        lightbox.style.display = 'none';
+    })
+        
+    // Sync slider
+    $('#carousel-b').on('click','a',function(e){
+        lazyLoad.displayOnly(nextPrev(e, 'b'))
+        lazyLoad.linkAction(nextPrev(e, 'b'))
+        var other = 'a';
+        $('#carousel-' + other).carousel(this.getAttribute('data-slide'));
+        $('#results').empty();
+    });
+
+    $('#carousel-a').on('click','a',function(e){
+        lazyLoad.displayOnly(nextPrev(e, 'a'))
+        lazyLoad.linkAction(nextPrev(e, 'a'))
+        var other = 'b';
+        $('#carousel-' + other).carousel(this.getAttribute('data-slide'));
+        $('#results').empty();
+    })
+
+
+    // Sync controls
+
+    $('.controls').on('click','a',function(e){
+        var link = parseInt(this.getAttribute('data-slide-to'));
+        lazyLoad.displayOnly(link);
+        lazyLoad.linkAction(link);
+        $('#results').empty();
+
+        // change active color
+        if($(".chosen").length){
+            $(".chosen")[0].classList.remove('chosen')
+        };
+
+        this.classList.add("chosen");
+
+
+        $('#carousel-a').carousel(link);
+        $('#carousel-b').carousel(link);
+
+    });
+    // add color to A after load
+
+    $(document).ready(function() {
+        if ($('.controls').find("a").length) {
+            $('.controls').find("a")[0].classList.add("chosen");
+        }
+    });
+
+    // check if we go next of back
+    function nextPrev(e, carousel){
+        var className = e.currentTarget.className;
+        var active = getActiveSlide();
+        console.log('active is ' +active);
+        var numberOfSlides = $('#carousel-' + carousel).find('.item').length - 1;
+        console.log('# of slides ' + numberOfSlides );
+        if (className === 'carousel-control-next'){
+            if (active === numberOfSlides){
+                return 0;
+            } else{
+                return active + 1;
+            };
+        } else if (className === 'carousel-control-prev'){
+            if (active === 0){
+                return numberOfSlides;
+            } else{
+                return active - 1;
+            };
+        }
+    };
+
+    // check slides on load
+    window.onload = function() {
+        lazyLoad.displayOnly(0);
+        lazyLoad.linkAction(0);
+    }
+ /////////////////////////////////////////   LAZY LOAD /////////////////////////////////////////
+    // Load more 
+    var lazyLoad ={
+        allowedNumber: 2,
+        step: 2,
+        currentNumber: 2,
+        activeSlide: 0,
+        link: $('#lazyLoadLink'),
+        // hide or show link based on its status
+        linkAction: function(slide){ 
+            if(this.status(slide)){ 
+                this.link.hide();
+                this.reset();
+            } else {
+                this.link.show();
+            };
+        }, 
+        status: function(slide){
+            // return true if link is needed
+            var result = (this.totalNumberOfCommentsX(slide) <= this.currentNumber) ?  true :  false;
+            return result
+        } ,
+        reset: function(){
+            this.currentNumber = 2;
+        },
+        increase: function(){
+            this.currentNumber += this.step;
+        },
+        totalNumberOfComments: function(){
+            return $( ".comment").length;
+        },
+        totalNumberOfCommentsX: function(slide){
+            return $(".container[data-slide='" + slide + "']").filter(function(){return $(this).data('level') === 0 }).length;
+        },
+        displayOnly: function(slide) {
+            var $allContainers = $( ".comment")
+            var display = [];
+            for (i = 0; i < $allContainers.length; i++){
+                $allContainers[i].style.display = 'none';
+                if (parseInt($allContainers[i].dataset.slide) == slide) {
+                    display.push($allContainers[i])
+                    //$allContainers[i].style.display = 'block';
+                }; 
+            };
+            // display only withing range
+            // check if the list long enough
+            var onlyMain = display.filter(function(el){return el.getAttribute('data-level') == 0 });        
+            var number = (onlyMain.length <  this.currentNumber) ? onlyMain.length : this.currentNumber;
+
+            //
+            for (i = 0; i < number; i++){
+                // idea : find main comments. display only two main comments with threads
+                let main_id = onlyMain[i].getAttribute('data-main');            
+                let toShow = display.filter(function(el){return el.getAttribute('data-main') === main_id} );          
+                toShow.forEach(function(el){el.style.display = 'block'});
+            
+            };
+        }
+    };
+
+    // Manage lazy load link
+    $('#lazyLoadLink').on('click', function(){
+        lazyLoad.increase();
+        lazyLoad.displayOnly(getActiveSlide());
+        lazyLoad.linkAction(getActiveSlide());
+    });
+
+    // double tap
+    (function($){
+
+        $.event.special.doubletap = {
+        bindType: 'touchend',
+        delegateType: 'touchend',
+    
+        handle: function(event) {
+            var handleObj   = event.handleObj,
+                targetData  = jQuery.data(event.target),
+                now         = new Date().getTime(),
+                delta       = targetData.lastTouch ? now - targetData.lastTouch : 0,
+                delay       = delay == null ? 300 : delay;
+    
+            if (delta < delay && delta > 30) {
+            targetData.lastTouch = null;
+            event.type = handleObj.origType;
+            ['clientX', 'clientY', 'pageX', 'pageY'].forEach(function(property) {
+                event[property] = event.originalEvent.changedTouches[0][property];
+            })
+    
+            // let jQuery handle the triggering of "doubletap" event handlers
+            handleObj.handler.apply(this, arguments);
+            } else {
+            targetData.lastTouch = now;
+            }
+        }
+        };
+    
+    })(jQuery);
+
+    // doubletouch
+    $('#carousel-b').on('doubletap',function(e){
+
+            lightbox.style.display = 'block';
+        });
+
+
+   
+   
+   
+  
+   //////// COLOR PALETTE /////////
+    
+    $("#full").spectrum({
+        color: "#ECC",
+        showInput: true,
+        className: "full-spectrum",
+        showInitial: true,
+        showPalette: true,
+        showSelectionPalette: true,
+        maxSelectionSize: 10,
+        preferredFormat: "hex",
+        localStorageKey: "spectrum.demo",
+        move: function (color) {
+            
+        },
+        show: function () {
+        
+        },
+        beforeShow: function () {
+        
+        },
+        hide: function () {
+        
+        },
+        change: function() {
+            
+        },
+        palette: [
+            ["rgb(0, 0, 0)", "rgb(67, 67, 67)", "rgb(102, 102, 102)",
+            "rgb(204, 204, 204)", "rgb(217, 217, 217)","rgb(255, 255, 255)"],
+            ["rgb(152, 0, 0)", "rgb(255, 0, 0)", "rgb(255, 153, 0)", "rgb(255, 255, 0)", "rgb(0, 255, 0)",
+            "rgb(0, 255, 255)", "rgb(74, 134, 232)", "rgb(0, 0, 255)", "rgb(153, 0, 255)", "rgb(255, 0, 255)"], 
+            ["rgb(230, 184, 175)", "rgb(244, 204, 204)", "rgb(252, 229, 205)", "rgb(255, 242, 204)", "rgb(217, 234, 211)", 
+            "rgb(208, 224, 227)", "rgb(201, 218, 248)", "rgb(207, 226, 243)", "rgb(217, 210, 233)", "rgb(234, 209, 220)", 
+            "rgb(221, 126, 107)", "rgb(234, 153, 153)", "rgb(249, 203, 156)", "rgb(255, 229, 153)", "rgb(182, 215, 168)", 
+            "rgb(162, 196, 201)", "rgb(164, 194, 244)", "rgb(159, 197, 232)", "rgb(180, 167, 214)", "rgb(213, 166, 189)", 
+            "rgb(204, 65, 37)", "rgb(224, 102, 102)", "rgb(246, 178, 107)", "rgb(255, 217, 102)", "rgb(147, 196, 125)", 
+            "rgb(118, 165, 175)", "rgb(109, 158, 235)", "rgb(111, 168, 220)", "rgb(142, 124, 195)", "rgb(194, 123, 160)",
+            "rgb(166, 28, 0)", "rgb(204, 0, 0)", "rgb(230, 145, 56)", "rgb(241, 194, 50)", "rgb(106, 168, 79)",
+            "rgb(69, 129, 142)", "rgb(60, 120, 216)", "rgb(61, 133, 198)", "rgb(103, 78, 167)", "rgb(166, 77, 121)",
+            "rgb(91, 15, 0)", "rgb(102, 0, 0)", "rgb(120, 63, 4)", "rgb(127, 96, 0)", "rgb(39, 78, 19)", 
+            "rgb(12, 52, 61)", "rgb(28, 69, 135)", "rgb(7, 55, 99)", "rgb(32, 18, 77)", "rgb(76, 17, 48)"]
+        ]
+    });
+
+    //// slide right to reply ANIMATION
+
+    $('#comments').on('click','#replied-to',function(e){
+        e.preventDefault();
+        let id = $(this).data('replied-to')
+        $('body,html').animate({scrollTop:$('.comment#'+id).offset().top},{
+            queue: true,
+            duration: 300
+        })
+    });
+
+
+ /////////////////////////////////////////  REPLY /////////////////////////////////////////
+    let main, parent;
+
+    // Show reply form
+    $('#comments').on('click','#reply-comment', function(event){
+        event.preventDefault();
+        console.log("reply pressed!");  // sanity check        
+        let com = new CommentReply();
+        com.hideForms();
+        com.parentObj = $('#' + com.getParentId($(this)));
+        com.showReplyForm(com.parentObj);
+        main = com.getMain($(this));
+        parent = com.getParentId($(this))
+    });
+
+
+    $('#reply-form').on('submit', function(event){
+        event.preventDefault();
+        let com = new CommentReply();
+        com.form = $('#comment-form-reply');
+        com.parentObj = com.form.parent();
+        
+        com.reply(com.form, com.parentObj);
+    })
+
+    // Cancel 
+    $('#comments').on('click','#reply-cancel', function(event){
+        event.preventDefault();
+        let com = new CommentReply();
+        com.hideForms();
+
+    })
+
+    let CommentReply = function(){
+        this.hideForms = function(){
+            $("#comment-form-reply").css("display","none");
+            // if(obj.length){
+            //     for (let i = 0; i < obj.length; i++) {
+            //         obj[i].remove();  
+            //     }
+            // }
+        },
+        this.reply = function(form, parentObj) {
+            console.log("reply is working!") // sanity check
+
+            var url_to = '/ajax/reply/';
+            var activeSlide = getActiveSlide();
+            $.ajax({
+                url : url_to, // the endpoint
+                type : "POST", // http method
+                data : {csrfmiddlewaretoken: $("#reply-form").data("csrf"),
+                        the_post_author : form.find('#post-author').val(), 
+                        the_post_text : form.find('#post-text').val(),
+                        class_id: "{{document.id}}",
+                        key: "{{ key }}",
+                        user_tag : $('#selectUserTagReply').val(),
+                        slide: activeSlide,
+                        main: main, 
+                        parent: parent}, // data sent with the post request
+                  
+                // handle a successful response
+                success: function(data) {
+                    console.log('Success');
+                    $('#post-text').val(''); // remove the value from the input
+                    $('#post-author').val('');
+                    
+                    // append html to the posts div
+                    // hide and move form not to delete it with other elements
+                    form.css("display","none");
+                    form.find("input, textarea").val("");
+                    form.appendTo("#comment-form")
+                    $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove()
+                
+                    $('#comments').append(data.comments_html);
+                    lazyLoad.displayOnly(getActiveSlide());
+                    lazyLoad.linkAction(getActiveSlide()); 
+                    
+                    // show results
+                    $('#results').empty();
+                    $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                    console.log("success"); // another sanity check
+                    
+                },
+                error: function(xhr, status, error) {
+                    // shit happens 
+                    console.log('Error');
+                }
+                    
+            });
+        };
+        this.getMain = function(obj){return $(obj).data('main')},
+        this.getParentId = function(obj){return $(obj).data('parent')}
+        this.showReplyForm = function(obj) {
+            console.log("show reply form is working!") // sanity check
+                $("#comment-form-reply").appendTo(obj);
+                $("#comment-form-reply").css("display","block");
+            // var url_to = '/ajax/show_reply_form/';
+            // $.ajax({
+            //     url : url_to, // the endpoint
+            //     type : "POST", // http method
+            //     data : {csrfmiddlewaretoken: '{{ csrf_token}}'
+            //             }, // data sent with the post request
+            //     // handle a successful response
+            //     success: function(data) {
+            //         console.log('Success');
+                    
+            //         // append html to the posts div
+                    
+            //         obj.append(data.html);
+            //     },
+            //     error: function(xhr, status, error) {
+            //         // shit happens 
+            //         console.log('Error');
+            //     }
+                    
+            // });
+        
+        };
+
+    }
+
+    /////////////////////////////////////////   POST / DELETE /////////////////////////////////////////
+    // Submit post on submit
+    $('#post-form').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!");  // sanity check        
+        create_post();
+    });
+
+    // Delete post on delete
+    $('#comments').on('click','.delete-post' , function(event){
+        event.preventDefault();
+        console.log("form delete pressed!");  // sanity check        
+        var id = $(this).attr('id');
+        console.log('Button id= ' + id);
+        delete_post(id);
+    });
+    // AJAX for deleting
+    function delete_post(id) {
+        console.log("delete post is working!") // sanity check
+
+        var url_to = '/ajax/delete/';
+        console.log(url_to);
+    
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    comment_id: id },// data sent with the post request
+            // handle a successful response
+            success : function(data) {
+
+                $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove()
+                //$("div.container#"+id).remove();
+                
+                $('#comments').prepend(data.comments_html);
+                lazyLoad.displayOnly(getActiveSlide());
+                lazyLoad.linkAction(getActiveSlide());
+                // show results
+                $('#results').empty();
+                $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                console.log("success"); // another sanity check
+            },
+            // handle a non-successful response
+            error : function() {
+                $('#results').empty();
+                $('#results').html("<div><h3>Oops! We have encountered an error: please reload the page</h3></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    };
+
+    /////////////////////////////////////////// Post Comment /////////////////////////////////////
+    function create_post() {
+        console.log("create post is working!") // sanity check
+
+        var url_to = '/ajax/post/';
+        console.log(url_to);
+        var activeSlide = getActiveSlide();
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    the_post_author : $('#post-author').val(), 
+                    the_post_text : $('#post-text').val(),
+                    user_tag : $('#selectUserTag').val(),
+                    class_id: "{{document.id}}",
+                    key: "{{ key }}",
+                    slide: activeSlide}, // data sent with the post request
+            // handle a successful response
+            success: function(data) {
+                console.log('Success');
+                $('#post-text').val(''); // remove the value from the input
+                $('#post-author').val('');
+                $('#selectUserTag').val(1); // remove value from selector
+                
+                // append html to the posts div
+                
+                $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove();                
+                $('#comments').append(data.comments_html);
+                lazyLoad.displayOnly(getActiveSlide());
+                lazyLoad.linkAction(getActiveSlide()); 
+                // show results
+                $('#results').empty();
+                $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                console.log("success"); // another sanity check
+            },
+            error: function(xhr, status, error) {
+                // shit happens 
+                console.log('Error');
+            }
+                
+        });
+    };
+
+
+
+
+    /////////////////////////// ADMIN TAGS ///////////////////
+    /// open selector and button
+    $("#comments").on("click","#userTag", function(){ 
+        let id = $(this).data('id');       
+        $("#selectAdminTag"+id).css("display","block");
+        $("#setAdminTag"+id).css("display","block");
+    })
+    // hide
+    
+    $(document).click(function(event) { 
+        if(!$(event.target).closest('.comment').length) {
+            $( "select[id^='selectAdminTag']").each(function(){
+                if($(this).is(":visible")) {
+                $(this).hide();
+                }
+            });
+            $( $("button[id^='setAdminTag']")).each(function(){
+                if($(this).is(":visible")) {
+                $(this).hide();
+                }
+            });
+        }        
+    });    
+    // update DB with ajax
+    $("#comments").on("click",".admin-selector",function(){
+        let id = $(this).data('id');
+        let tag = $("#selectAdminTag" + id).val()  
+        if(tag !== "none"){
+            admin_tag(tag, id);
+        } 
+    });
+
+    function admin_tag(tag,comment_id) {
+        var url_to = '/ajax/admin_tag/';
+        var activeSlide = getActiveSlide();
+        $.ajax({
+            url : url_to, // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    class_id: "{{document.id}}",
+                    key: "{{ key }}",
+                    slide: activeSlide,
+                    id: comment_id,
+                    tag: tag}, // data sent with the post request
+            // handle a successful response
+            success: function(data) {
+                console.log('Success');
+                // append html to the posts div
+                
+                $('.comment').filter(function(){return $(this).data('slide')== getActiveSlide()}).remove();                
+                $('#comments').append(data.comments_html);
+                lazyLoad.displayOnly(getActiveSlide());
+                lazyLoad.linkAction(getActiveSlide()); 
+
+                console.log("success"); // another sanity check
+            },
+            error: function(xhr, status, error) {
+                // shit happens 
+                console.log('Error');
+            }
+                
+        });
+    };
+    ////////////////////////// collapse comment block //////////////////////////////////////
+    $("#toggle-comments").on("click", function(e){
+        e.preventDefault();
+        let display, text;
+        if($("#comments1").css("display") === "block"){
+            display = "none";
+            text = "show comments"
+        } else {
+            display = "block";
+            text = "collapse comments"
+        };
+        $.ajax({
+            url : "/ajax/toggle_comments/", // the endpoint
+            type : "POST", // http method
+            data : {csrfmiddlewaretoken: '{{ csrf_token}}',
+                    class_id: "{{document.id}}",
+                    display: display
+                }, // data sent with the post request
+            // handle a successful response
+            success: function(data) {
+                console.log('Success');
+                $("#comments1").css("display", display);
+                $("#comments2").css("display", display);
+                $("#comments3").css("display", display);
+                $("#toggle-comments").empty();
+                $("#toggle-comments").append("<h3>" + text + "</h3>");
+                
+            },
+            error: function(xhr, status, error) {
+                // shit happens 
+                console.log('Error');
+            }
+                
+        });
+    })
+</script>
