@@ -1,8 +1,9 @@
 {% extends "base/base_generic.html" %}
+{% load static %}
 
 {% block title %} <title>List of courses</title> {% endblock %}
 
-
+<a href="{% url 'login'%}?next={{request.path}}" style="position: absolute;top: 0px;right: 0px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
 {% block content %}
 {% include "login_logo.html" %}
 

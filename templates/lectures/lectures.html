@@ -22,14 +22,18 @@
 {% endblock %}
 
 {% block content %}
+ <!-- login button -->
+<a href="{% url 'login'%}?next={{request.path}}" style="position: absolute;top: 5px;right: 10px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
+
 
 <!-- Error block -->
 {% if error %} <h1>{{ error }} </h1> {% endif %}
-<!-- login button -->
-{% include "login_logo.html" %}
+
+
 <!-- ROW FOR CHAPTERS AND CAROUSEL -->
 
 <div class="row blue" style="background-color: {{ document.color }} !important;">
+   
 
     <!-- LEFT COLUMN -->
     <div class="col-md-3">
