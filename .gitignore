@@ -1,5 +1,7 @@
 *.pyc
 runserver
+migrate
+makemigrations
 db.sqlite3
 
 venv_slide
@@ -10,6 +12,7 @@ settings_local.py
 
 **/media
 
+**/migrations
 **/migrations/**
 **/**/migrations
 

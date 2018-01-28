@@ -1,2 +1,0 @@
-#!/bin/bash
-exec ./manage.py migrate --settings=slider.settings_local
