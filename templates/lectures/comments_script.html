@@ -530,7 +530,10 @@
         let tag = $("#selectAdminTag" + id).val()  
         if(tag !== "none"){
             admin_tag(tag, id);
-        } 
+        } else {
+            $("#selectAdminTag" + id).css("display", "none");
+            $(this).css("display","none");
+        };
     });
 
     function admin_tag(tag,comment_id) {
