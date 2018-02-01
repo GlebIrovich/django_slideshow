@@ -4,13 +4,14 @@
 
 {% block title %}<title>Upload manual</title> {% endblock %}
 {% block content %}
-
+<div style="padding-bottom: 20px;padding-top: 20px;max-width:600px">
     <h2>Before uploading files</h2>
     <ol>
         <li type="1">
             <p>Make sure, that your file structure looks as followed:</p>
             <img src="{% static 'structure.png' %}" height="300">
-            <p>A class folder contains folders with lecture slides as well as the 'details.csv'</p>
+            <p>A class folder contains folders with lecture slides as well as the 'details.csv'. 
+                If you want a logo to be displayed, place image in the root folder. Make sure to call it "logo.jpg"</p>
         </li>
         <li type="1">
             <p>Include the 'details.csv' file in every lecture folder</p>
@@ -22,6 +23,11 @@
                 subchapter's title and the slide number, where this subchapter starts.</p>
         </li>
         <li type="1">
+                <p>If you include a link in the third column, it will be automatically added 
+                    to the web page right after the subchapter title.:</p>
+                <img src="{% static 'details2.png' %}" height="90">
+            </li>
+        <li type="1">
             <p>Please use only .jpg, .jpeg or .png for the slides. Other file formats will be ignored.</p>
         </li>
         <li type="1">
@@ -32,6 +38,7 @@
                  but it can affect their order - names are sorted alphabetically. </p>
         </li>
     </ol>
+</div>
 
 
 {% endblock %}
