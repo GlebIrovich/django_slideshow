@@ -13,7 +13,7 @@
     <div class="container comment" id={{comment.id}} data-main="{{comment.main_id}}" data-parent-comment="{{comment.parent_id}}" data-level="{{comment.level}}" data-slide ="{{ comment.slide }}" style="margin-bottom: 7px;color:black !important; {{ pad }}" >
         <div class="panel-white post panel-shadow" style ="border:0px;">
             
-            {% if user.is_authenticated %}
+            {% if user.is_staff %}
             <!-- close button -->
             <div class="pull-right m-3">
                 
@@ -44,9 +44,11 @@
             <div class="post-description"> 
                 <p>{{ comment.text }}</p>
                 <!-- reply -->
+                {% if user.is_authenticated %}
                 <div>
                     <button id="reply-comment" data-main="{{comment.main_id}}" data-parent="{{comment.id}}" type="submit" class="btn btn-secondary pull-right" style="border-color: white !important;border-radius:10px;">reply</button>
                 </div>
+                {% endif %}
                 <!-- tags -->
                 <div class="pull-right" style="padding-right:10px; padding-top:2px;"> 
                     {% if comment.admin_tag %}
@@ -57,18 +59,17 @@
                 </div>
                 
                 <!-- admin tag selector --> 
+                {% if user.is_staff %}
                 <div class="form-group pull-right" style="padding-right:5px;margin:0;">
-                    {% if user.is_authenticated %}
+                    
                     <select id="selectAdminTag{{comment.id}}" class="custom-select" style="padding-bottom:0px !important;display: none;">
                         <option selected>none</option>
                         <option>under consideration</option>
                         <option>implemented</option>
                         <option>declined</option>
                     </select>
-                    {% endif %} 
                 </div>
                 <!-- confirm tag -->
-                {% if user.is_authenticated %}
                 <button id="setAdminTag{{comment.id}}" data-id="{{comment.id}}" type="submit" class="btn btn-secondary pull-right admin-selector" style="border-color: white !important;border-radius:10px;margin-right:5px;display:none;">ok</button>
                 {% endif %}
                 

@@ -22,12 +22,6 @@
 {% endblock %}
 
 {% block content %}
- <!-- login button -->
-    {% if user.is_authenticated %}
-    {% else %}
-    <a href="{% url 'login'%}?next={{request.path}}" style="position: absolute;top: 5px;right: 10px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
-    {% endif %}
-
 
 <!-- Error block -->
 {% if error %} <h1>{{ error }} </h1> {% endif %}
@@ -67,14 +61,14 @@
 </div>
 
 <!-- ROW FOR COMMENTS -->
-<div class="row white">
+<div class="row white" style="padding-bottom:20px;">
     <!-- LEFT COLUMN -->
     <div class="col-md-3"></div>
     <!-- CENTRAL COLUMN -->
     <div class="col-md-6">
-        <div class="pull-right">
+        <!-- <div class="pull-right">
             {% include 'facebook/facebookBTN.html' %}
-        </div>
+        </div> -->
         <div>
             <p><mark># contributors</mark></p>
             <p>Markus M. Gleb I.</p>
@@ -85,8 +79,10 @@
         </div>
         <div class="row" id="comments2" style="display: {{document.comments_display}} !important;">
              <!-- Comment form -->
-            {% include "lectures/comments_form.html" %}
-            {% include "lectures/comments_form_reply.html" %}
+            {% if user.is_authenticated %}
+                {% include "lectures/comments_form.html" %}
+                {% include "lectures/comments_form_reply.html" %}
+            {% endif %}
         </div>
         <div id="comments3" style="display: {{document.comments_display}} !important;">
             <!-- COMMENTS -->
@@ -99,7 +95,7 @@
         </div>
         <!-- LOAD MORE -->
         {% if comments %}
-        <div align = "center" style="margin-bottom:30px;">
+        <div align = "center" style="margin-bottom:30px; display: {{document.comments_display}} !important;">
             <a id="lazyLoadLink" href="javascript:void(0);" data-page="2" style = "display:none;">Load More Comments</a>
         </div>
         {% endif %}

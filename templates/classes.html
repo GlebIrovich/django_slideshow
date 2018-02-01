@@ -2,12 +2,7 @@
 {% load static %}
 
 {% block title %} <title>List of courses</title> {% endblock %}
-    {% if user.is_authenticated %}
-    {% else %}
-    <a href="{% url 'login'%}?next={{request.path}}" style="position: absolute;top: 0px;right: 0px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
-    {% endif %}
 {% block content %}
-{% include "login_logo.html" %}
 
 <!-- List of uploaded documents -->
 <div class='container' align="center">

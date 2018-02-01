@@ -27,6 +27,9 @@ MEDIA_ROOT = '/home/cookiehunter/webapps/uzh_slideshow_media/'
 MEDIA_URL = '/media/'
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
+# custom authentication
+AUTH_USER_MODEL = 'user_management.User'
+AUTHENTICATION_BACKENDS = ['user_management.auth_backend.EmailBackend']
 LOGIN_REDIRECT_URL = 'home'
 
 
@@ -45,12 +48,17 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['0.0.0.0', 'uzh.cookiehunter.webfactional.com']
 
+# custom authentication
+AUTH_USER_MODEL = 'user_management.User'
+AUTHENTICATION_BACKENDS = ['user_management.auth_backend.EmailBackend']
 LOGIN_REDIRECT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
     'slider',
     'carousel',
+    'comments',
+    'user_management',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

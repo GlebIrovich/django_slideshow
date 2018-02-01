@@ -15,7 +15,9 @@
 <body>
   <!-- NAVBAR -->
 
-  {% if user.is_authenticated %}
+  {% if not user.is_authenticated or user.is_student%}
+  {% include 'base/control_panel.html' %}
+  {% elif user.is_staff or user.is_superuser %}
   <nav class="navbar navbar-expand-lg navbar-light bg-light" style="margin-bottom: 0 !important;">
       <div class="navbar-header" >
       <a class="navbar-brand" href="#" align="middle"><h3>UZH presetation sharing</h3></a>
@@ -29,7 +31,6 @@
           <li class="nav-item active">
           <a class="nav-link" href="{% url 'carousel:list_classes' %}"><h3>home</h3> <span class="sr-only">(current)</span></a>
           </li>
-          {% if user.is_authenticated %}
           <li class="nav-item">
           <a class="nav-link" href="{% url 'carousel:upload' %}"><h3>upload</h3></a>
           </li>
@@ -39,18 +40,14 @@
           <li class="nav-item">
           <a class="nav-link" href="{% url 'logout'%}?next={{request.path}}"><h3>logout</h3></a>
           </li>   
-          {% else %}
-          <li class="nav-item">
-          <a class="nav-link my-2 my-sm-0" href="{% url 'login'%}?next={{request.path}}"><h3>login<h3></a>
-          </li>   
-          {% endif %}
           
           {% block navbar %}
           {% endblock %}
       </ul>
       </div>
   </nav>
-  {% endif %} 
+  {% endif %}
+  
 
 
   <div class="container-fluid">

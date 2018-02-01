@@ -328,13 +328,12 @@
         this.reply = function(form, parentObj) {
             console.log("reply is working!") // sanity check
 
-            var url_to = '/ajax/reply/';
+            var url_to = '/comments/ajax/reply/';
             var activeSlide = getActiveSlide();
             $.ajax({
                 url : url_to, // the endpoint
                 type : "POST", // http method
                 data : {csrfmiddlewaretoken: $("#reply-form").data("csrf"),
-                        the_post_author : form.find('#post-author').val(), 
                         the_post_text : form.find('#post-text').val(),
                         class_id: "{{document.id}}",
                         key: "{{ key }}",
@@ -347,7 +346,6 @@
                 success: function(data) {
                     console.log('Success');
                     $('#post-text').val(''); // remove the value from the input
-                    $('#post-author').val('');
                     
                     // append html to the posts div
                     // hide and move form not to delete it with other elements
@@ -362,7 +360,7 @@
                     
                     // show results
                     $('#results').empty();
-                    $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                    $('#results').append("<h3 style= 'color:green;'>"+ data.result + "</h3>")
                     console.log("success"); // another sanity check
                     
                 },
@@ -424,7 +422,7 @@
     function delete_post(id) {
         console.log("delete post is working!") // sanity check
 
-        var url_to = '/ajax/delete/';
+        var url_to = '/comments/ajax/delete/';
         console.log(url_to);
     
         $.ajax({
@@ -443,7 +441,7 @@
                 lazyLoad.linkAction(getActiveSlide());
                 // show results
                 $('#results').empty();
-                $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                $('#results').append("<h3 style= 'color:green;'>"+ data.result + "</h3>")
                 console.log("success"); // another sanity check
             },
             // handle a non-successful response
@@ -459,14 +457,13 @@
     function create_post() {
         console.log("create post is working!") // sanity check
 
-        var url_to = '/ajax/post/';
+        var url_to = '/comments/ajax/post/';
         console.log(url_to);
         var activeSlide = getActiveSlide();
         $.ajax({
             url : url_to, // the endpoint
             type : "POST", // http method
             data : {csrfmiddlewaretoken: '{{ csrf_token}}',
-                    the_post_author : $('#post-author').val(), 
                     the_post_text : $('#post-text').val(),
                     user_tag : $('#selectUserTag').val(),
                     class_id: "{{document.id}}",
@@ -476,7 +473,6 @@
             success: function(data) {
                 console.log('Success');
                 $('#post-text').val(''); // remove the value from the input
-                $('#post-author').val('');
                 $('#selectUserTag').val(1); // remove value from selector
                 
                 // append html to the posts div
@@ -487,7 +483,7 @@
                 lazyLoad.linkAction(getActiveSlide()); 
                 // show results
                 $('#results').empty();
-                $('#results').append("<h3 style= 'colore:green;'>"+ data.result + "</h3>")
+                $('#results').append("<h3 style= 'color:green;'>"+ data.result + "</h3>")
                 console.log("success"); // another sanity check
             },
             error: function(xhr, status, error) {
@@ -537,7 +533,7 @@
     });
 
     function admin_tag(tag,comment_id) {
-        var url_to = '/ajax/admin_tag/';
+        var url_to = '/comments/ajax/admin_tag/';
         var activeSlide = getActiveSlide();
         $.ajax({
             url : url_to, // the endpoint

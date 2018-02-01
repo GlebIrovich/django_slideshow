@@ -1,0 +1,13 @@
+{% load static %}
+<div style="margin-bottom:40px;">
+{% if user.is_authenticated %}
+<a href="{% url 'logout'%}?next={{request.path}}" title="Logout" style="position: absolute;top: 5px;right: 10px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
+{% else %}
+<a href="{% url 'login'%}?next={{request.path}}" title="Login" style="position: absolute;top: 5px;right: 10px;"><img src="{% static 'login.png' %}" height="30" class="pull-right"></a>
+{% endif %}
+<a href="{% url 'user_management:student_signup' %}" title="Sign up" style="position: absolute;top: 5px;right: 40px;"><img src="{% static 'register.png' %}" height="27" class="pull-right"></a>
+<a href="{% url 'carousel:list_classes' %}" title="Home" style="position: absolute;top: 5px;right: 70px;"><img src="{% static 'home.png' %}" height="30" class="pull-right"></a>
+{% if user.is_authenticated %}
+<p class="pull-right" style="position: absolute;top: 15px;right: 120px;"> Welcome <b>{{ user.get_username }}</b> !</p>
+{% endif %}
+</div>

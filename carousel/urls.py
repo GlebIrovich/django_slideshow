@@ -12,19 +12,6 @@ urlpatterns = [
     url(r'^delete/$', views.DeleteList, name='delete'),
     # classes
     url(r'^$', views.list_classes, name='list_classes'),
-    
-    # create post
-    url(r'^ajax/post/$', views.create_post, name='create_post'),
-    # delete post
-    url(r'^ajax/delete/$', views.delete_post, name='create_post'),
-    # lazy load
-    url(r'^ajax/lazy_load/$', views.lazy_load, name='lazy_load'),
-    # show reply form
-    url(r'^ajax/show_reply_form/$', views.show_reply_form, name='show_reply_form'),
-    # show reply form
-    url(r'^ajax/reply/$', views.reply, name='reply'),
-    # show admin tag
-    url(r'^ajax/admin_tag/$', views.admin_tag, name='admin_tag'),
     # show collapse comments
     url(r'^ajax/toggle_comments/$', views.toggle_comments, name='toggle_comments'),
     # change color

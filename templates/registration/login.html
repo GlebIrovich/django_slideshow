@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="container" align="center">  
-
+    <h3>Login</h3>
      <!--Display errors-->
      {% if form.errors %}
      <div class="alert alert-dismissible alert-warning">
@@ -10,26 +10,13 @@
          <h4 class="alert-heading">Warning!</h4>
          <p class="mb-0"><h5>Your username and password didn't match. Please try again.</h5></p>
      </div>
-     {% endif %}
-     {% if next %}
-        {% if user.is_authenticated %}
-        <p><h5>Your account doesn't have access to this page. To proceed,
-        please login with an account that has access.</h5></p>
-        {% else %}
-        <p><h5>Please login to see this page.</h5></p>
-        {% endif %}
-    {% endif %}
- 
+     {% endif %} 
 
     <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
         <fieldset>
 
-            <label for="id_username"><h5>Username:</h5></label>
-            <p><input id="id_username" type="text" name="username" placeholder="Username" maxlength="100" required /></p>
-
-
-            <label for="id_password"><h5>Password:</h5></label>
+            <p><input id="id_username" type="text" name="username" placeholder="Email" maxlength="100" required /></p>
             <p><input id="id_password" type="password"  name="password" placeholder="Password" maxlength="100" required /></p>
 
         </fieldset>

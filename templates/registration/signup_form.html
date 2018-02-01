@@ -1,0 +1,45 @@
+{% extends "base/base_generic.html" %}
+
+{% block content %}
+<div class="container" align="center" style="padding-top:20px;">  
+    <h3>Sign up</h3>
+     <!--Display errors-->
+     {% if form.errors %}
+     
+     <div class="alert alert-dismissible alert-warning">
+         <button type="button" class="close" data-dismiss="alert">&times;</button>
+         <h4 class="alert-heading">Warning!</h4>
+         {% for field in form %}
+          {% if field.errors %}
+            {% for error in field.errors %}
+            <p class="mb-0"><h5>{{error|escape}}</h5></p>
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      
+      {% if form.non_field_errors %}
+      <p class="mb-0"><h5>{{form.non_field_errors}}</h5></p>
+      {% endif %}
+     </div>
+     
+     {% endif %}
+
+    <form method="post" action="{% url 'user_management:student_signup' %}">
+    {% csrf_token %}
+        <fieldset>
+            <p><input id="id_username" type="text" name="username" placeholder="Username" maxlength="100" required />
+            <small id="fileHelp" class="form-text text-muted">Will be displayed in comments</small></p>
+            <p><input id="id_email" type="text" name="email" placeholder="Email" maxlength="100" required />
+            <p><input id="id_first_name" type="text" name="first_name" placeholder="First name" maxlength="100" required />
+            <p><input id="id_last_name" type="text" name="last_name" placeholder="Last name" maxlength="100" required />
+            <p><input id="id_student_id" type="number" name="student_id" placeholder="Student id" maxlength="100" required />
+            <small id="fileHelp" class="form-text text-muted">Please provide your matriculation number without '-' signs</small></p>
+            <p><input id="id_password1" type="password"  name="password1" placeholder="Password" maxlength="100" required /></p>
+            <p><input id="id_password2" type="password"  name="password2" placeholder="Confirm password" maxlength="100" required /></p>
+
+        </fieldset>
+        <fieldset>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </fieldset>
+</div>
+{% endblock %}
