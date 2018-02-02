@@ -14,6 +14,8 @@ from .scripts import unzip, generate_json
 from django.contrib.admin.views.decorators import staff_member_required
 import os
 import shutil
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
 
 
 # Create your views here.
@@ -54,7 +56,9 @@ def upload_documents(request):
                     newdoc.save()
                     # No errors
                     error = ''
-                except Exception:
+
+                except Exception as e: 
+                    print(e)
                     # Display error + Delete files
                     error = 'Import error.'
                     path = settings.MEDIA_ROOT + os.path.dirname(newdoc.docfile.name)
@@ -82,6 +86,76 @@ def upload_documents(request):
                     'form': form,
                     'error': error}
                     )
+
+@staff_member_required
+def add_lecture(request, document_id):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+
+        #get file extension
+        extension = os.path.splitext(request.FILES['docfile'].name)[1][0:].lower() # extention
+        original_name = os.path.splitext(request.FILES['docfile'].name)[0][0:] # name without extention
+        # Check extension. Must be .zip
+        if extension == '.zip':
+            # manualy save file
+            f = request.FILES['docfile']
+            path_to_file = settings.MEDIA_ROOT + "temp/" + str(f)
+            temp_directory_path = settings.MEDIA_ROOT + "temp/"
+            path = default_storage.save("temp/" + str(f), ContentFile(f.read()))
+            
+            # Unzip
+            unzip(path_to_file, temp_directory_path)
+            # Check number of items uploaded
+            not_files = ([name for name in os.listdir(path_to_file[0:-4]+ "/") if os.path.isdir(path_to_file[0:-4]+ "/" + name)])
+            if not not_files:
+                # rename
+                doc = Presentation.objects.get(pk = document_id)
+                destination = settings.MEDIA_ROOT + str(doc.docfile)
+                files = [x for x in os.listdir(destination) if not '.' in x]
+                files.sort()
+                name = 'z' + files[-1]
+                old_name = path_to_file[0:-4] # without .zip
+                new_name = temp_directory_path + name
+                os.rename(old_name, new_name)
+
+                #move directory
+                shutil.move(new_name, destination)
+
+                # remove temporary directory
+                shutil.rmtree(temp_directory_path)
+                # update json 
+                try:           
+                    json = generate_json(doc.docfile.name, doc.title)
+                    doc.json = json
+                    doc.save()
+                    # No errors
+                    error = ''
+                except Exception as e: 
+                    print(e)
+                    # Display error + Delete files
+                    error = 'Import error.'
+                    path = destination + '/' + name
+                    shutil.rmtree(path)
+            else:
+                error = 'Import error. Seems that you are uploading several lectures. Check your zip file, it must contain a single folder with slides and details.csv.'
+        else:
+            error = "Wrong file format. You must use .zip only."
+
+    else:
+        form = DocumentForm() # Empty
+        error="" # Empty
+
+    # Render list page with the documents and the form and error if needed
+
+    documents = Presentation.objects.all()
+
+    return render(
+                    request, 'upload.html',
+                    {'documents': documents,
+                    'form': form,
+                    'error': error}
+                    )
+
 
 @staff_member_required
 def DeleteList(request):

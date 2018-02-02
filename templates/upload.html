@@ -69,7 +69,70 @@
                     
                 </div>
             </div>
-    </div>
+        </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-3"></div>
+</div>
+
+<!-- ADD LECTURE -->
+<div class="row" style="padding-top:20px;">
+        <!-- LEFT COLUMN -->
+        <div class="col-md-3"></div>
+        <!-- CENTRAL COLUMN -->
+        <div class="col-md-6">
+            {% if documents %}
+            {% for document in documents%}
+            <div style="padding:10px; border-style: solid; border-width: 1px; margin:5px;">
+                <h4>Add lecture to class "{{document.title}}"</h4>
+                <form action="{% url 'carousel:add_lecture' document.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="id_docfile"><h5>Choose a lecture to add</h5></label>
+                            <input id="docfile" type="file" name="docfile" class="form-control-file" aria-describedby="fileHelp" required>
+                            <small id="fileHelp" class="form-text text-muted">Please, read carefully the <a href="{% url 'carousel:manual' %}">'Upload manual'</a>.</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </fieldset>
+                </form>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-3"></div>
+</div>
+
+<!-- ROW FOR REPORTING TOOLS -->
+<div class="row" style="padding-top:20px;">
+        <!-- LEFT COLUMN -->
+        <div class="col-md-3"></div>
+        <!-- CENTRAL COLUMN -->
+        <div class="col-md-6">
+            {% if documents %}
+            <p>Report activity in comments</p>
+
+            <style> th{font-size: 9pt;} 
+                    table, th, td {border: 1px solid black;}
+                    th, td {padding: 7px;}
+            </style>
+
+            <font size="2">
+                <table style="width:100%" id="reportTable">
+                <tr>
+                    <th>Class title</th>
+                    <th>Generate report</th> 
+                </tr>
+                {% for document in documents %}
+                <tr>
+                    <th>{{ document.title }}</th>
+                    <th><a href="{% url 'report:report_comments' document.id %}">Report</a></th> 
+                </tr>
+                {% endfor %}
+                </table>
+            </font>
+            {% endif %}
+        </div>
     <!-- RIGHT COLUMN -->
     <div class="col-md-3"></div>
 </div>

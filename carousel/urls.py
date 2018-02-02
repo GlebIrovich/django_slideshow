@@ -1,4 +1,4 @@
-# carousel/urls
+#carousel/urls
 
 from django.conf.urls import url
 from . import views
@@ -8,6 +8,8 @@ app_name = 'carousel'
 urlpatterns = [
     # upload
     url(r'^upload/$', views.upload_documents, name= 'upload'),
+    # add lecture
+    url(r'^upload/add-lecture/(?P<document_id>[0-9]+)/$', views.add_lecture, name= 'add_lecture'),
     # delete
     url(r'^delete/$', views.DeleteList, name='delete'),
     # classes
@@ -24,7 +26,4 @@ urlpatterns = [
 
     # upload manual
     url(r'^upload_manual/$', views.manual, name= 'manual'),
-
-    
-
 ]

@@ -11,6 +11,8 @@ urlpatterns = [
     url(r'^accounts/', include('django.contrib.auth.urls')),
     # connect carousel app
     url(r'^', include('carousel.urls')),
+    # connect report app
+    url(r'^report/', include('report.urls')),
     # connect comments app
     url(r'^comments/', include('comments.urls')), 
     # connect User Management app

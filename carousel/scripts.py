@@ -73,8 +73,11 @@ def generate_json(path, class_name):
                     dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['slide'] = data.iloc[n][1]
                     
                     # save link if any
-                    if not pd.isnull(data.iloc[n][2]):
-                        dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['link'] = data.iloc[n][2]
+                    try:    
+                        if not pd.isnull(data.iloc[n][2]):
+                            dic['lectures']['lecture{}'.format(i)]['subchapters']['sub{}'.format(n)]['link'] = data.iloc[n][2]
+                    except Exception:
+                        pass
                         
             # add inforamtion about slides' paths
             slides = os.listdir(subpath)

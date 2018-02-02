@@ -1,4 +1,14 @@
-<div style="padding-top:15px;padding-right:10px;">
+<style>
+    .chapters::-webkit-scrollbar {
+        width: 5px;
+        height: 8px;
+        background-color: #aaa; /* or add it to the track */
+        }
+    .chapters::-webkit-scrollbar-thumb {
+        background: #000; 
+        }
+</style>
+<div style="padding-top:15px;padding-right:10px;height: 21vw;max-height:350px;" class="pre-scrollable chapters">
 {% if lectures %}
 <ul>
 {% for key_curent, title in lectures %}
