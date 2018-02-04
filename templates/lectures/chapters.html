@@ -1,4 +1,11 @@
 <style>
+    .chapters {
+        height: 21vw;
+        overflow: auto;
+        padding-top:15px;
+        padding-right:10px;
+        max-height:350px;
+    }
     .chapters::-webkit-scrollbar {
         width: 5px;
         height: 8px;
@@ -7,34 +14,40 @@
     .chapters::-webkit-scrollbar-thumb {
         background: #000; 
         }
+    .chapterBox {
+        height: 21vw;
+        overflow: hidden; 
+        position: relative;
+    }
 </style>
-<div style="padding-top:15px;padding-right:10px;height: 21vw;max-height:350px;" class="pre-scrollable chapters">
-{% if lectures %}
-<ul>
-{% for key_curent, title in lectures %}
-<a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a>  
-    {% if subchapters %}
+<div>
+    <div class="pre-scrollable chapters">
+    {% if lectures %}
+    <ul>
+    {% for key_curent, title in lectures %}
+    <a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a>  
+        {% if subchapters %}
 
-        {% if key_curent == key %}
-            <ul type="a" class='controls'>
-            {% for title, position, link in subchapters %}
-    
-                    <h4 style="padding-right:25px;">
-                        <span><a href="#carousel" data-slide-to = "{{ position }}">{{ title }}</a>
-                            {% if link %} (<a href="{{ link }}">link</a>) {% endif %}
-                        </span>
-                    </h4>
-                
-            {% endfor %}
-            </ul>
+            {% if key_curent == key %}
+                <ul type="a" class='controls'>
+                {% for title, position, link in subchapters %}
+        
+                        <h4 style="padding-right:25px;">
+                            <span><a href="#carousel" data-slide-to = "{{ position }}">{{ title }}</a>
+                                {% if link %} (<a href="{{ link }}">link</a>) {% endif %}
+                            </span>
+                        </h4>
+                    
+                {% endfor %}
+                </ul>
+            {% endif %}
         {% endif %}
+
+    {% endfor %}
+    </ul>
+
+    {% else %}
+        <p>No lectures uploaded.</p>
     {% endif %}
-
-{% endfor %}
-</ul>
-
-{% else %}
-    <p>No lectures uploaded.</p>
-{% endif %}
+    </div>
 </div>
-
