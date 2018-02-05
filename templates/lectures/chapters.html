@@ -32,20 +32,26 @@
     ol.controls > li::before {
         counter-increment: alpha;
     }
+    a.chapter {
+        direction: ltr;
+    }
 </style>
 <div style="padding-bottom:25px;">
     <div class="pre-scrollable chapters">
     {% if lectures %}
     <ol start="0" dir="rtl">
     {% for key_curent, title in lectures %}
-    <li><a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a></li>  
+    <li><a class="chapter" href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a></li>  
         {% if subchapters %}
 
             {% if key_curent == key %}
                 <ol class='controls'>
                 {% for title, position, link in subchapters %}
         
-                    <li><a href="#carousel" data-slide-to = "{{ position }}">{{ title }} </a> <!-- {% if link %} ( <a href="{{ link }}">link</a> ) {% endif %} --> </li>
+                    <li>
+                        <a class="chapter" href="#carousel" data-slide-to = "{{ position }}"> <h4>{{ title }}</h4>  </a> 
+                        {% if link %} (<a href="{{ link }}">link</a>) {% endif %}  
+                    </li>
 
                 {% endfor %}
                 </ol>
