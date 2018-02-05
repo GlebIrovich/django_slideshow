@@ -18,33 +18,42 @@
         height: 21vw;
         overflow: hidden; 
         position: relative;
+        }
+
+    ol.controls {
+        counter-reset: alpha;
+        padding: 10px;
+        padding-right:20px; 
+    }
+    ol.controls li {
+        list-style: lower-alpha;
+        position: relative;
+    }
+    ol.controls > li::before {
+        counter-increment: alpha;
     }
 </style>
 <div style="padding-bottom:25px;">
     <div class="pre-scrollable chapters">
     {% if lectures %}
-    <ul>
+    <ol start="0" dir="rtl">
     {% for key_curent, title in lectures %}
-    <a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a>  
+    <li><a href="{% url 'carousel:list_lectures' document.id key_curent %}" id="chapter-link"> <h3>{{ title }}</h3>  </a></li>  
         {% if subchapters %}
 
             {% if key_curent == key %}
-                <ul type="a" class='controls'>
+                <ol class='controls'>
                 {% for title, position, link in subchapters %}
         
-                        <h4 style="padding-right:25px;">
-                            <span><a href="#carousel" data-slide-to = "{{ position }}">{{ title }}</a>
-                                {% if link %} (<a href="{{ link }}">link</a>) {% endif %}
-                            </span>
-                        </h4>
-                    
+                    <li><a href="#carousel" data-slide-to = "{{ position }}">{{ title }} </a> <!-- {% if link %} ( <a href="{{ link }}">link</a> ) {% endif %} --> </li>
+
                 {% endfor %}
-                </ul>
+                </ol>
             {% endif %}
         {% endif %}
 
     {% endfor %}
-    </ul>
+            </ol>
 
     {% else %}
         <p>No lectures uploaded.</p>
