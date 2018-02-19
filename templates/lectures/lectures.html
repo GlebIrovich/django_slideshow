@@ -4,11 +4,14 @@
 <!-- Update header title -->
 {% block title %} <title>Lectures</title> {% endblock %}
 {% block head %} 
-
+<!-- Send all variables to js -->
+{% include 'lectures/pageController.html' %}
+ <!-- Load scripts -->
 <link rel="stylesheet" href= {% static 'lightbox.css' %}>
 <link rel="stylesheet" href= {% static 'comments.css' %}>
 <link rel="stylesheet" href= {% static 'spectrum.css' %}>
 <script src= {% static 'spectrum.js' %}></script>
+<script src= {% static 'lectures/lectures.js' %}></script>
 
 {% endblock %}
 <!-- add elements to navbar -->
@@ -107,6 +110,6 @@
 {% endblock %}
 
 {% block java_script %}
-{% include 'lectures/comments_script.html' %}
+<!-- {% include 'lectures/comments_script_remake.html' %} -->
 {% include 'lectures/change_color.html' %}
 {% endblock %}

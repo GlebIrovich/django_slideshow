@@ -1,6 +1,6 @@
 #carousel/views
 from django.shortcuts import render
-from .forms import DocumentForm #, PostForm
+from .forms import DocumentForm
 from .models import Presentation
 from comments.models import PostComment
 from django.http import HttpResponseRedirect, JsonResponse
@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.views import View
 from django.template import loader
+from django.core import serializers
 
 from .scripts import unzip, generate_json
 from django.contrib.admin.views.decorators import staff_member_required
@@ -280,6 +281,8 @@ class ListLectures(View):
             'length': self.length,
             'error': self.error,
             'comments': self.comments,
+            # add JSON comments
+            'commentsJSON': serializers.serialize("json",self.comments),
             'logo': self.logo}
         )
 # change background color
